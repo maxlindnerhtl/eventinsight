@@ -1,0 +1,322 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    background-image: url('/public/image.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.group-title {
+    text-transform: capitalize;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+h2 {
+    color: #0c67c9;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.submit-button {
+    padding: 12px;
+    background-color: #7a9bbf;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: #5b83c1;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.form-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.toggle-form-button {
+    margin-top: 20px;
+    background: none;
+    border: none;
+    color: #0c67c9;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.toggle-form-button:hover {
+    color: #095d9a;
+}
+
+.login-button {
+    background-color: white;
+    color: #0c67c9;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-button:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+.login-button:focus {
+    outline: none;
+}
+
+.event-info {
+    flex-direction: column;
+    height: auto;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 4px solid #0c67c9;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.event-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #0c67c9;
+    margin-bottom: 1rem;
+}
+
+.event-date {
+    font-size: 2rem;
+    color: #333;
+    margin-top: 0.5rem;
+}
+
+/*-------------------------------Sponsor------------------------------------------*/
+
+.sponsor-event-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sponsor-images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.sponsor-image {
+    object-fit: cover;
+    margin: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sponsor-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0;
+}
+
+.sponsor-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.sponsor-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 2px solid #7a9bbf;
+    border-radius: 8px;
+}
+
+/*-------------------------------Sponsor------------------------------------------*/
+
+
+/*-------------------------------EditAdmin------------------------------------------*/
+.entry-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.entry-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.edit-window {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-window input {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.edit-window-button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #7a9bbf;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-window button:hover {
+    background-color: #5b83c1;
+}
+
+/*-------------------------------EditAdmin------------------------------------------*/
+
+/*-------------------------------Text------------------------------------------*/
+.text-container {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    border: 2px solid #0c67c9;
+}
+
+.edit-text-container {
+    max-width: 1000px;
+    height: 500px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: hidden; /* Prevents overflow issues */
+}
+
+.textarea {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+}
+
+/*-------------------------------Text------------------------------------------*/
+
+/*-------------------------------Admin------------------------------------------*/
+
+.admin-title {
+    color: #7a9bbf;
+}
+
+.toggle-form-button-admin {
+    color: #7a9bbf;
+    margin-top: 20px;
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.event-info-admin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 20vh;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255);
+    border: 4px solid #7a9bbf;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-title-admin {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #7a9bbf;
+}
+
+/*-------------------------------Admin------------------------------------------*/

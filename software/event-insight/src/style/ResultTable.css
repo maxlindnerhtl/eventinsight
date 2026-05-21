@@ -1,0 +1,107 @@
+/*-------------------------------------------SWITCH------------------------------------------*/
+.switch-container {
+    margin: 20px 0;
+    display: inline-flex;
+    gap: 4px;
+    padding: 6px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.switch-button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    color: #495057;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.switch-button:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.switch-button.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.switch-button:active {
+    transform: scale(0.98);
+}
+
+.switch-button.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/*-------------------------------------------SWITCH------------------------------------------*/
+
+
+/*-------------------------------------------TABLE------------------------------------------*/
+.result-table {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    table-layout: fixed;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    min-width: 75px;
+    z-index: 1;
+}
+
+.table-head {
+    background-color: #0c67c9;
+    position: sticky;
+    top: 0;
+    color: white;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+
+table tbody tr {
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+table th:nth-child(1), table td:nth-child(1) {
+ font-weight: bold;
+}
+
+table th:nth-child(8), table td:nth-child(8) {
+    min-width: 200px;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+table tbody tr:hover {
+    background-color: #e3f2fd;
+}
+
+
+/*-------------------------------------------TABLE------------------------------------------*/

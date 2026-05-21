@@ -1,0 +1,246 @@
+CREATE DATABASE  IF NOT EXISTS `eventinsight` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `eventinsight`;
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: eventinsight
+-- ------------------------------------------------------
+-- Server version	8.0.34
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `AdminEventAccess`
+--
+
+DROP TABLE IF EXISTS `AdminEventAccess`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `AdminEventAccess` (
+  `idadmineventacces` int NOT NULL AUTO_INCREMENT,
+  `adminid` int NOT NULL,
+  `eventid` int NOT NULL,
+  PRIMARY KEY (`idadmineventacces`),
+  KEY `fk_AdminEventAccess_Admins_idx` (`adminid`),
+  KEY `fk_AdminEventAccess_Events1_idx` (`eventid`),
+  CONSTRAINT `fk_AdminEventAccess_Admins` FOREIGN KEY (`adminid`) REFERENCES `Admins` (`idadmindata`),
+  CONSTRAINT `fk_AdminEventAccess_Events1` FOREIGN KEY (`eventid`) REFERENCES `Events` (`idevents`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `AdminEventAccess`
+--
+
+LOCK TABLES `AdminEventAccess` WRITE;
+/*!40000 ALTER TABLE `AdminEventAccess` DISABLE KEYS */;
+/*!40000 ALTER TABLE `AdminEventAccess` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Admins`
+--
+
+DROP TABLE IF EXISTS `Admins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Admins` (
+  `idadmindata` int NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL DEFAULT 'olta',
+  `username` varchar(255) NOT NULL,
+  PRIMARY KEY (`idadmindata`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Admins`
+--
+
+LOCK TABLES `Admins` WRITE;
+/*!40000 ALTER TABLE `Admins` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Admins` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Events`
+--
+
+DROP TABLE IF EXISTS `Events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Events` (
+  `idevents` int NOT NULL AUTO_INCREMENT,
+  `eventname` varchar(45) NOT NULL,
+  `eventdate` date NOT NULL,
+  `eventlocation` varchar(45) NOT NULL,
+  `eventaddress` varchar(45) NOT NULL,
+  PRIMARY KEY (`idevents`)
+) ENGINE=InnoDB AUTO_INCREMENT=263 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Events`
+--
+
+LOCK TABLES `Events` WRITE;
+/*!40000 ALTER TABLE `Events` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Events` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `IntermediateTimes`
+--
+
+DROP TABLE IF EXISTS `IntermediateTimes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `IntermediateTimes` (
+  `idintermediatetimes` int NOT NULL AUTO_INCREMENT,
+  `longitude` float NOT NULL,
+  `latitude` float NOT NULL,
+  `idlivemap` int NOT NULL,
+  PRIMARY KEY (`idintermediatetimes`),
+  KEY `fk_table1_LiveMap1_idx` (`idlivemap`),
+  CONSTRAINT `fk_table1_LiveMap1` FOREIGN KEY (`idlivemap`) REFERENCES `LiveMap` (`idlivemap`)
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `IntermediateTimes`
+--
+
+LOCK TABLES `IntermediateTimes` WRITE;
+/*!40000 ALTER TABLE `IntermediateTimes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `IntermediateTimes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `LiveMap`
+--
+
+DROP TABLE IF EXISTS `LiveMap`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `LiveMap` (
+  `idlivemap` int NOT NULL AUTO_INCREMENT,
+  `mapname` varchar(255) NOT NULL,
+  `mappath` varchar(255) NOT NULL,
+  `maptime` time NOT NULL,
+  `eventid` int NOT NULL,
+  PRIMARY KEY (`idlivemap`),
+  KEY `fk_LiveMap_Events1_idx` (`eventid`),
+  CONSTRAINT `fk_LiveMap_Events1` FOREIGN KEY (`eventid`) REFERENCES `Events` (`idevents`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `LiveMap`
+--
+
+LOCK TABLES `LiveMap` WRITE;
+/*!40000 ALTER TABLE `LiveMap` DISABLE KEYS */;
+/*!40000 ALTER TABLE `LiveMap` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SimpleAPI`
+--
+
+DROP TABLE IF EXISTS `SimpleAPI`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `SimpleAPI` (
+  `idsimpleapi` int NOT NULL AUTO_INCREMENT,
+  `listname` varchar(255) NOT NULL,
+  `listlink` varchar(255) NOT NULL,
+  `eventid` int NOT NULL,
+  `idlivemap` int NOT NULL,
+  PRIMARY KEY (`idsimpleapi`),
+  KEY `fk_SimpleAPI_Events1_idx` (`eventid`),
+  KEY `fk_SimpleAPI_LiveMap1_idx` (`idlivemap`),
+  CONSTRAINT `fk_SimpleAPI_Events1` FOREIGN KEY (`eventid`) REFERENCES `Events` (`idevents`),
+  CONSTRAINT `fk_SimpleAPI_LiveMap1` FOREIGN KEY (`idlivemap`) REFERENCES `LiveMap` (`idlivemap`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `SimpleAPI`
+--
+
+LOCK TABLES `SimpleAPI` WRITE;
+/*!40000 ALTER TABLE `SimpleAPI` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SimpleAPI` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Sponsors`
+--
+
+DROP TABLE IF EXISTS `Sponsors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Sponsors` (
+  `idSponsors` int NOT NULL AUTO_INCREMENT,
+  `sponsorname` varchar(255) NOT NULL,
+  `sponsorpath` varchar(255) NOT NULL,
+  `is_displayed` tinyint DEFAULT '0',
+  `eventid` int NOT NULL,
+  PRIMARY KEY (`idSponsors`),
+  KEY `fk_Sponsors_Events1_idx` (`eventid`),
+  CONSTRAINT `fk_Sponsors_Events1` FOREIGN KEY (`eventid`) REFERENCES `Events` (`idevents`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Sponsors`
+--
+
+LOCK TABLES `Sponsors` WRITE;
+/*!40000 ALTER TABLE `Sponsors` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Sponsors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Text`
+--
+
+DROP TABLE IF EXISTS `Text`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Text` (
+  `idtext` int NOT NULL AUTO_INCREMENT,
+  `text` longtext NOT NULL,
+  `eventid` int NOT NULL,
+  PRIMARY KEY (`idtext`),
+  KEY `fk_Text_Events1_idx` (`eventid`),
+  CONSTRAINT `fk_Text_Events1` FOREIGN KEY (`eventid`) REFERENCES `Events` (`idevents`)
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Text`
+--
+
+LOCK TABLES `Text` WRITE;
+/*!40000 ALTER TABLE `Text` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Text` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-04-08  8:42:01

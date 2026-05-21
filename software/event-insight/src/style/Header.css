@@ -1,0 +1,133 @@
+/*-------------------------------HEADER-------------------------------------------*/
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to top, #0c67c9, #4091fd); /* Gradient background from top to bottom */
+    color: white;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 9000;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
+
+.header-title {
+    text-align: center;
+    border-top: 4px solid #ffffff;
+    border-bottom: 4px solid #ffffff;
+    padding: 5px 0;
+}
+
+
+.username-display {
+    margin-right: 15px;
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.LogoLink {
+    list-style: none;
+    color: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    margin-right: 272px;
+}
+
+.links ul li.active-link a {
+    background-color: #ffffff;
+    color: #0c67c9;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.links ul li.active-link a:hover {
+    transform: scale(1.1);
+    background-color: #d3e0ea;
+    color: #0c67c9;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 30px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #084f9c;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+
+/*-------------------------------------------Admin------------------------------------------*/
+
+.header.header-admin {
+    background: linear-gradient(to top, #7a9bbf, #b0c4de); /* Gradient background from top to bottom */
+}
+
+.header.header-admin .links ul li.active-link a {
+    color: #333333;
+}
+
+.header.header-admin .links ul li a {
+    color: #333333;
+}
+
+.header.header-admin .links ul li a:hover {
+    background: #b0c4de;
+    color: #333333;
+}
+
+.header.header-admin .header-title {
+    color: #333333;
+    border-top: 4px solid #333333;
+    border-bottom: 4px solid #333333;
+}
+
+.header.header-admin .login-container .login-button {
+    color: #333333;
+}
+
+.header.header-admin .login-container .login-button:hover {
+    color: #333333;
+}

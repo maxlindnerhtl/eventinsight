@@ -1,0 +1,117 @@
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s, transform 0.2s;
+    margin-bottom: 8px;
+}
+
+.checkbox-item:hover {
+    background: #e3f2fd;
+    transform: scale(1.02);
+}
+
+.checkbox-label {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+}
+
+.checkbox-input {
+    margin-right: 12px;
+    transform: scale(1.2);
+    accent-color: #0c67c9;
+}
+
+.checkbox-container {
+    width: 43vh;
+    max-height: 120.7vh; /* Adjusted height to prevent checkboxes from spanning the whole page */
+    overflow-y: auto;
+    border: 2px solid #0c67c9;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.checkbox-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0c67c9;
+}
+
+
+.sticky-search {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/*-------------------------------------------Checkbox------------------------------------------*/
+
+.map-grid-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* Left column larger, right column smaller */
+    grid-template-rows: auto auto; /* Two rows: first for map, second for chart */
+    gap: 20px;
+}
+
+.map-grid-map {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%; /* Full height for the map */
+    overflow: hidden;
+}
+
+.map-grid-participants {
+    grid-column: 2;
+    grid-row: 1 / span 2; /* Span across both rows */
+    overflow-y: auto;
+    height: auto; /* Adjust to content height */
+}
+
+.map-grid-elevation {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    height: auto; /* Ensure the elevation chart is below the map */
+}
+
+/*-------------------------------------------Elevation Chart------------------------------------------*/
+.elevation-chart-wrapper {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 144vh; /* 100% width to adjust with the map */
+    height: 40vh; /* Fixed height for the elevation chart */
+    z-index: 1000;
+    overflow: hidden;
+}
+
+
+/*-------------------------------------------Map Wrapper------------------------------------------*/
+
+.map-wrapper {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

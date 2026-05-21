@@ -1,0 +1,92 @@
+.footer {
+    background: linear-gradient(to bottom, #0c67c9, #4091fd); /* Gradient background from top to bottom */
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: auto;
+    box-shadow: 0 -10px 8px rgba(0, 0, 0, 0.3);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.footer-contacts {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.footer-contact {
+    margin: 0 30px;
+    text-align: left;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.footer-contact h4 {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.footer-contact a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+    text-decoration: underline;
+    color: #d3e0ea;
+}
+
+.footer-links {
+    margin-top: 10px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.footer-links a:hover {
+    background-color: #d3e0ea;
+    color: #0c67c9;
+}
+
+/*-------------------------------------------Admin------------------------------------------*/
+
+.footer.footer-admin {
+    background: linear-gradient(to bottom, #7a9bbf, #b0c4de); /* Gradient background from top to bottom */
+    color: #333333;
+}
+
+
+.footer.footer-admin .footer-contact a {
+    color: #333333;
+
+}
+
+.footer.footer-admin .footer-contact a:hover {
+    color: #333333;
+}
+
+
+.footer.footer-admin .footer-links a {
+    color: #333333;
+
+}
+
+.footer.footer-admin .footer-links a:hover {
+    color: #333333;
+}
