@@ -7,6 +7,13 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // validateToken is intentionally NOT using apiClient:
+    // This is a startup existence-check (runs once on app init in useEffect line 25-29).
+    // If the token is invalid, we want a silent clear without triggering apiClient's 401 interceptor,
+    // which would dispatch auth:logout and hard-redirect even during startup initialization.
+    // That would cause an unwanted page reload before the app has even finished mounting.
+    // Only auth failures during normal app operation (after startup) should trigger the
+    // apiClient -> auth:logout -> redirect flow.
     const validateToken = async (token) => {
         try {
             const {data: {username}} = await axios.get('http://localhost:3001/admins/me', {
@@ -37,9 +44,20 @@ export const AuthProvider = ({children}) => {
     };
 
     const logout = () => {
+        const isAdmin = !!user;
         localStorage.clear();
         setUser(null);
+        
+        const redirectTo = isAdmin ? '/adminLogin' : '/';
+        window.location.href = redirectTo;
     };
+
+    // Listen for 401 errors from apiClient and trigger logout
+    useEffect(() => {
+        const handleLogout = () => logout();
+        window.addEventListener('auth:logout', handleLogout);
+        return () => window.removeEventListener('auth:logout', handleLogout);
+    }, [user]);
 
     return (
         <AuthContext.Provider value={{user, login, logout, loading}}>

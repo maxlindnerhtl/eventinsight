@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useCallback, useMemo} from "react";
 import {useParams} from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../utils/apiClient";
+import { fetchGPXFile } from "../../utils/fetchGPXFile";
+import { parseGPXToFullProfile } from "../../utils/gpxParser";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import GPXMap from "../../components/GPXMap";
@@ -82,7 +84,7 @@ const UserLiveMap = () => {
                     );
                     if (validMap) {
                         setSelectedGpx(validMap);
-                        setStartTime(validMap.maptime); // Set the start time from the saved map
+                        setStartTime(validMap.maptime);
                         console.log('Saved map loaded:', validMap);
                     } else {
                         console.warn('Saved map not found in available data');
@@ -159,7 +161,7 @@ const UserLiveMap = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const {data} = await axios.get(`http://localhost:3001/files/livemap?eventid=${id}`);
+                const {data} = await apiClient.get('/files/livemap', { params: { eventid: id } });
                 setGpxData(
                     data.map((item) => ({
                         value: item.listlink || `http://localhost:3001/${item.mappath.replace(/\\/g, "/")}`,
@@ -167,7 +169,7 @@ const UserLiveMap = () => {
                         apiLink: item.listlink,
                         intermediateTimes: [],
                         idlivemap: item.idlivemap,
-                        maptime: item.maptime // Add maptime to the data
+                        maptime: item.maptime
                     }))
                 );
             } catch (err) {
@@ -180,16 +182,16 @@ const UserLiveMap = () => {
 
     useEffect(() => {
         if (selectedGpx?.idlivemap) {
-            axios
-                .get(`http://localhost:3001/files/results/fetchFromMap?mapId=${selectedGpx.idlivemap}`)
+            apiClient
+                .get('/files/results/fetchFromMap', { params: { mapId: selectedGpx.idlivemap } })
                 .then(({data}) => setSelectedApi({value: data.listlink, label: selectedGpx.label}))
                 .catch((err) => {
                     console.error("Error fetching API link:", err);
                     setError("Error loading API link.");
                 });
 
-            axios
-                .get(`http://localhost:3001/files/intermediateTimes/getByMap?idlivemap=${selectedGpx.idlivemap}`)
+            apiClient
+                .get('/files/intermediateTimes/getByMap', { params: { idlivemap: selectedGpx.idlivemap } })
                 .then(({data}) => {
                     const markers = data.map((marker) => ({
                         progress: calculateProgressFromMarker(marker),
@@ -210,14 +212,14 @@ const UserLiveMap = () => {
                 value: newGpx.value,
                 label: newGpx.label,
                 apiLink: newGpx.apiLink,
-                maptime: newGpx.maptime // Save maptime
+                maptime: newGpx.maptime
             };
             setSelectedGpx(mapToSave);
-            setStartTime(newGpx.maptime); // Set the start time
+            setStartTime(newGpx.maptime);
             localStorage.setItem('selectedGpx', JSON.stringify(mapToSave));
         } else {
             setSelectedGpx(null);
-            setStartTime("00:00:00"); // Reset to default start time
+            setStartTime("00:00:00");
             localStorage.removeItem('selectedGpx');
         }
     };
@@ -236,51 +238,20 @@ const UserLiveMap = () => {
     useEffect(() => {
         const fetchGPXData = async () => {
             try {
-                const response = await fetch(selectedGpx.value);
-                const gpxText = await response.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(gpxText, "text/xml");
-                const trackPoints = xmlDoc.getElementsByTagName("trkpt");
+                const gpxText = await fetchGPXFile(selectedGpx.value);
+                const fullProfile = parseGPXToFullProfile(gpxText, { include3D: true });
 
-                let cumulativeDistance = 0;
-                const R = 6371000;
-                const toRad = (deg) => (deg * Math.PI) / 180;
-                const points = [];
+                // Convert to track points format expected by the rest of the component
+                const gpxTrackPoints = fullProfile.map(point => ({
+                    lat: point.lat,
+                    lon: point.lon,
+                    cumDistance: point.distance,
+                    ele: point.elevation,
+                }));
 
-                for (let i = 0; i < trackPoints.length; i++) {
-                    const lat = parseFloat(trackPoints[i].getAttribute("lat"));
-                    const lon = parseFloat(trackPoints[i].getAttribute("lon"));
-                    if (i > 0) {
-                        const prevLat = parseFloat(trackPoints[i - 1].getAttribute("lat"));
-                        const prevLon = parseFloat(trackPoints[i - 1].getAttribute("lon"));
-                        const dLat = toRad(lat - prevLat);
-                        const dLon = toRad(lon - prevLon);
-                        const a =
-                            Math.sin(dLat / 2) ** 2 +
-                            Math.cos(toRad(prevLat)) * Math.cos(toRad(lat)) * Math.sin(dLon / 2) ** 2;
-                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                        let dHoriz = R * c;
-
-                        const eleTagCurrent = trackPoints[i].getElementsByTagName("ele");
-                        const eleTagPrev = trackPoints[i - 1].getElementsByTagName("ele");
-                        if (eleTagCurrent.length > 0 && eleTagPrev.length > 0) {
-                            const eleCurrent = parseFloat(eleTagCurrent[0].textContent);
-                            const elePrev = parseFloat(eleTagPrev[0].textContent);
-                            const deltaEle = eleCurrent - elePrev;
-                            dHoriz = Math.sqrt(dHoriz * dHoriz + deltaEle * deltaEle);
-                        }
-                        cumulativeDistance += dHoriz;
-                    }
-                    const eleTag = trackPoints[i].getElementsByTagName("ele");
-                    const ele = eleTag.length > 0 ? parseFloat(eleTag[0].textContent) : 0;
-                    points.push({
-                        lat,
-                        lon,
-                        cumDistance: cumulativeDistance,
-                        ele // Höhe mit dazu
-                    });                }
-                setTotalDistance(cumulativeDistance);
-                setGpxTrackPoints(points);
+                const totalDist = fullProfile.length > 0 ? fullProfile[fullProfile.length - 1].distance : 0;
+                setTotalDistance(totalDist);
+                setGpxTrackPoints(gpxTrackPoints);
             } catch (err) {
                 console.error("Error loading GPX data:", err);
                 setError("Error calculating route length.");

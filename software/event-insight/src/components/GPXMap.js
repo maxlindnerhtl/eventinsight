@@ -4,33 +4,8 @@ import StartGoalMarkers from "./StartGoalMarkers";
 import IntermediateTimeMarker from "./IntermediateTimeMarker";
 import ParticipantMarker from "./ParticipantMarker";
 import {FaCrosshairs} from "react-icons/fa";
-
-async function loadGPXFile(url) {
-    try {
-        const response = await fetch(url);
-        const gpxText = await response.text();
-        return gpxText;
-    } catch (error) {
-        console.error("Fehler beim Laden der GPX-Datei:", error);
-        return null;
-    }
-}
-
-function parseGPXtoTrackData(gpxText) {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(gpxText, "text/xml");
-    const trackPoints = xmlDoc.getElementsByTagName("trkpt");
-
-    const trackData = [];
-    for (let i = 0; i < trackPoints.length; i++) {
-        const lat = parseFloat(trackPoints[i].getAttribute("lat"));
-        const lon = parseFloat(trackPoints[i].getAttribute("lon"));
-        if (!isNaN(lat) && !isNaN(lon)) {
-            trackData.push([lat, lon]);
-        }
-    }
-    return trackData;
-}
+import {fetchGPXFile} from "../utils/fetchGPXFile";
+import {parseGPXToTrackCoordinates} from "../utils/gpxParser";
 
 function calculateBoundsAndCenter(route) {
     if (route.length === 0) return {center: null, zoom: 14};
@@ -108,15 +83,17 @@ const GPXMap = ({gpxPath, intermediateTimes, participantsData}) => {
     useEffect(() => {
         async function loadAndParseGPXData() {
             setIsLoading(true);
-            const gpxText = await loadGPXFile(gpxPath);
-            if (gpxText) {
-                const trackData = parseGPXtoTrackData(gpxText);
+            try {
+                const gpxText = await fetchGPXFile(gpxPath);
+                const trackData = parseGPXToTrackCoordinates(gpxText);
                 if (trackData.length > 0) {
                     setRoute(trackData);
                     const {center, zoom} = calculateBoundsAndCenter(trackData);
                     setCenter(center);
                     setZoom(zoom);
                 }
+            } catch (error) {
+                console.error("Fehler beim Laden oder Parsen der GPX-Datei:", error);
             }
             setIsLoading(false);
         }

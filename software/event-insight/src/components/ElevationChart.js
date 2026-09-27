@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import { Chart, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend } from 'chart.js';
+import { parseGPXToFullProfile } from '../utils/gpxParser';
+import { fetchGPXFile } from '../utils/fetchGPXFile';
 
 Chart.register(LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend);
 
@@ -15,44 +16,17 @@ const ElevationChart = ({ gpxPath, participants }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const parseGPXtoElevationData = (gpxText) => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(gpxText, 'text/xml');
-        const trackPoints = xmlDoc.getElementsByTagName('trkpt');
-
-        let cumulativeDistance = 0;
-        const R = 6371000;
-        const toRad = (deg) => (deg * Math.PI) / 180;
-
-        let prevLat = null, prevLon = null;
-        const data = [];
-
-        for (let i = 0; i < trackPoints.length; i++) {
-            const lat = parseFloat(trackPoints[i].getAttribute('lat'));
-            const lon = parseFloat(trackPoints[i].getAttribute('lon'));
-            const elevation = parseFloat(trackPoints[i].getElementsByTagName('ele')[0]?.textContent || 0);
-
-            if (prevLat !== null && prevLon !== null) {
-                const dLat = toRad(lat - prevLat);
-                const dLon = toRad(lon - prevLon);
-                const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(prevLat)) * Math.cos(toRad(lat)) * Math.sin(dLon / 2) ** 2;
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                cumulativeDistance += R * c;
-            }
-            prevLat = lat;
-            prevLon = lon;
-
-            data.push({ distance: cumulativeDistance, elevation });
-        }
-        return data;
-    };
-
     useEffect(() => {
         const fetchGPXData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(gpxPath);
-                const elevationData = parseGPXtoElevationData(response.data);
+                const gpxText = await fetchGPXFile(gpxPath);
+                const fullProfile = parseGPXToFullProfile(gpxText, { include3D: false });
+                // Extract just distance and elevation for the chart
+                const elevationData = fullProfile.map(point => ({
+                    distance: point.distance,
+                    elevation: point.elevation,
+                }));
                 setDataPoints(elevationData);
             } catch (err) {
                 setError('Fehler beim Laden der GPX-Daten.');
