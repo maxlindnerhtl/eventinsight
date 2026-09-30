@@ -15,7 +15,8 @@ const AdminEdit = () => {
     const [selectedList, setSelectedList] = useState(null);
     const [sponsors, setSponsors] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loadError, setLoadError] = useState(null);
+    const [actionError, setActionError] = useState('');
     const [isEditWindowOpen, setIsEditWindowOpen] = useState(false);
     const [currentField, setCurrentField] = useState("");
     const [currentValue, setCurrentValue] = useState("");
@@ -50,7 +51,7 @@ const AdminEdit = () => {
                 setSponsors(sponsorRes.data);
                 setLoading(false);
             } catch (error) {
-                setError("Fehler beim Abrufen der Eventdaten");
+                setLoadError("Fehler beim Abrufen der Eventdaten");
                 setLoading(false);
             }
         };
@@ -64,8 +65,9 @@ const AdminEdit = () => {
     };
 
     const handleSave = async () => {
+        setActionError('');
         if (!currentValue) {
-            alert("Das Feld darf nicht leer sein");
+            setActionError("Das Feld darf nicht leer sein");
             return;
         }
         try {
@@ -87,7 +89,16 @@ const AdminEdit = () => {
             else setEvent(prev => ({...prev, [currentField]: formattedValue}));
             setIsEditWindowOpen(false);
         } catch (error) {
-            setError("Fehler beim Aktualisieren der Daten");
+            const errorData = error.response?.data;
+            const backendMessage =
+                errorData?.message ||
+                (typeof errorData?.error === 'string'
+                    ? errorData.error
+                    : errorData?.error?.message);
+
+            setActionError(
+                backendMessage || "Fehler beim Aktualisieren der Daten"
+            );
         }
     };
 
@@ -106,7 +117,7 @@ const AdminEdit = () => {
                 setSponsors(prev => prev.filter(item => item.idSponsors !== id));
             }
         } catch (error) {
-            setError(`Fehler beim Löschen der ${type}`);
+            setActionError(`Fehler beim Löschen der ${type}`);
         }
     };
 
@@ -118,7 +129,7 @@ const AdminEdit = () => {
             await apiClient.delete(`http://localhost:3001/events/deleteEvent`, {data: {id}});
             navigate('/'); // Redirect to home after deletion
         } catch (error) {
-            setError("Fehler beim Löschen des Events");
+            setActionError("Fehler beim Löschen des Events");
         }
     };
 
@@ -134,7 +145,7 @@ const AdminEdit = () => {
     const truncateText = (text, maxLength = 30) => text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 
     if (loading) return <div>Laden...</div>;
-    if (error) return <div>{error}</div>;
+    if (loadError) return <div>{loadError}</div>;
 
     return (
         <div className="wrapper">
@@ -163,6 +174,7 @@ const AdminEdit = () => {
                                                 <button className="edit-window-button"
                                                         onClick={() => setIsEditWindowOpen(false)}>Abbrechen
                                                 </button>
+                                                {actionError && <p className="error-message">{actionError}</p>}
                                             </div>
                                         ) : (
                                             <>
@@ -219,6 +231,7 @@ const AdminEdit = () => {
                                                 <button className="edit-window-button"
                                                         onClick={() => setIsEditWindowOpen(false)}>Abbrechen
                                                 </button>
+                                                {actionError && <p className="error-message">{actionError}</p>}
                                             </div>
                                         ) : (
                                             <>
@@ -260,6 +273,7 @@ const AdminEdit = () => {
                                                 <button className="edit-window-button"
                                                         onClick={() => setIsEditWindowOpen(false)}>Abbrechen
                                                 </button>
+                                                {actionError && <p className="error-message">{actionError}</p>}
                                             </div>
                                         ) : (
                                             <>
