@@ -1,10 +1,19 @@
 const mysql = require('mysql2');
 
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbUser = process.env.DB_USER || 'root';
+const dbPassword = process.env.DB_PASSWORD;
+const dbName = process.env.DB_NAME || 'eventinsight';
+
+if (!dbPassword) {
+    throw new Error('DB_PASSWORD is not set');
+}
+
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'eventinsight'
+    host: dbHost,
+    user: dbUser,
+    password: dbPassword,
+    database: dbName
 });
 
 connection.connect((err) => {

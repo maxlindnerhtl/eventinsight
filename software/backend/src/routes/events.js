@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../db');
 const errorHandler = require('../utils/errorHandler');
+const authenticateToken = require('../utils/authenticateToken');
 
 // Event routes
 router.get('/', (req, res) => {
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
     );
 });
 
-router.post('/add', (req, res) => {
+router.post('/add', authenticateToken, (req, res) => {
     const {eventname, eventdate, eventlocation, eventaddress, adminid} = req.body;
 
     const query = `
@@ -40,9 +41,18 @@ router.post('/add', (req, res) => {
     });
 });
 
-router.put('/updateEvent', (req, res) => {
+router.put('/updateEvent', authenticateToken, (req, res) => {
     const {id, field, value} = req.body;
     if (!id || !field || !value) return errorHandler.handleValidationError('Missing parameters', res);
+
+    const allowedFields = ['eventname', 'eventdate', 'eventlocation', 'eventaddress'];
+    if (!allowedFields.includes(field)) {
+        return errorHandler.handleValidationError('Invalid event field', res);
+    }
+
+    if (field === 'eventdate' && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return errorHandler.handleValidationError('Invalid event date format. Expected YYYY-MM-DD.', res);
+    }
 
     connection.query(`UPDATE Events
                       SET ${field} = ?
@@ -52,7 +62,7 @@ router.put('/updateEvent', (req, res) => {
     });
 });
 
-router.delete('/deleteEvent', (req, res) => {
+router.delete('/deleteEvent', authenticateToken, (req, res) => {
     const {id} = req.body;
     if (!id) return errorHandler.handleValidationError('Missing event ID', res);
 
@@ -65,18 +75,31 @@ router.delete('/deleteEvent', (req, res) => {
             connection.query('DELETE FROM SimpleAPI WHERE eventid = ?', [id], (err) => {
                 if (err) return errorHandler.handleDatabaseError(err, res);
 
-                connection.query('DELETE FROM LiveMap WHERE eventid = ?', [id], (err) => {
-                    if (err) return errorHandler.handleDatabaseError(err, res);
-
-                    connection.query('DELETE FROM Sponsors WHERE eventid = ?', [id], (err) => {
+                connection.query(
+                    `DELETE FROM IntermediateTimes
+                     WHERE idlivemap IN (
+                         SELECT idlivemap
+                         FROM LiveMap
+                         WHERE eventid = ?
+                     )`,
+                    [id],
+                    (err) => {
                         if (err) return errorHandler.handleDatabaseError(err, res);
 
-                        connection.query('DELETE FROM Events WHERE idevents = ?', [id], (err) => {
+                        connection.query('DELETE FROM LiveMap WHERE eventid = ?', [id], (err) => {
                             if (err) return errorHandler.handleDatabaseError(err, res);
-                            res.status(200).json({message: 'Event deleted successfully'});
+
+                            connection.query('DELETE FROM Sponsors WHERE eventid = ?', [id], (err) => {
+                                if (err) return errorHandler.handleDatabaseError(err, res);
+
+                                connection.query('DELETE FROM Events WHERE idevents = ?', [id], (err) => {
+                                    if (err) return errorHandler.handleDatabaseError(err, res);
+                                    res.status(200).json({message: 'Event deleted successfully'});
+                                });
+                            });
                         });
-                    });
-                });
+                    }
+                );
             });
         });
     });

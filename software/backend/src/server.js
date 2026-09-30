@@ -1,7 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const routes = require('./routes/routes');
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors());
@@ -22,6 +25,6 @@ app.get('/', (req, res) => {
 
 app.use('/', routes);
 
-app.listen(3001, () => {
-    console.log('Server läuft auf http://localhost:3001');
+app.listen(PORT, () => {
+    console.log(`Server läuft auf http://localhost:${PORT}`);
 });

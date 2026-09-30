@@ -3,7 +3,11 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const errorHandler = require('../utils/errorHandler');
 
-const secretKey = 'b8d1f7b9-7f1c-4b99-ae82-7a2d42e0d3d8';
+const secretKey = process.env.JWT_SECRET;
+
+if (!secretKey) {
+    throw new Error('JWT_SECRET is not set');
+}
 
 router.get('/validateToken', (req, res) => {
     const authHeader = req.headers['authorization'];

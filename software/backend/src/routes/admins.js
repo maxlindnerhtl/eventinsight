@@ -4,19 +4,25 @@ const connection = require('../db');
 const bcrypt = require('bcryptjs');
 const errorHandler = require('../utils/errorHandler');
 const jwt = require('jsonwebtoken');
-const secretKey = 'b8d1f7b9-7f1c-4b99-ae82-7a2d42e0d3d8\n';
+const authenticateToken = require('../utils/authenticateToken');
 
-router.get('/', (req, res) => {
-    connection.query('SELECT idadmindata, password, username FROM Admins', (err, results) => {
+const secretKey = process.env.JWT_SECRET;
+
+if (!secretKey) {
+    throw new Error('JWT_SECRET is not set');
+}
+
+router.get('/', authenticateToken, (req, res) => {
+    connection.query('SELECT idadmindata, username FROM Admins', (err, results) => {
         if (err) return errorHandler.handleDatabaseError(err, res);
         res.json(results);
     });
 });
 
-router.post('/createAdmin', (req, res) => {
+router.post('/createAdmin', authenticateToken, (req, res) => {
     const {username, password} = req.body;
 
-    connection.query('SELECT * FROM Admins WHERE username = ?', [username], (err, result) => {
+    connection.query('SELECT idadmindata FROM Admins WHERE username = ?', [username], (err, result) => {
         if (err) return errorHandler.handleDatabaseError(err, res);
         if (result.length > 0) return errorHandler.handleValidationError('Benutzername bereits vergeben', res);
 
