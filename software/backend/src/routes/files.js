@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../db');
 const errorHandler = require('../utils/errorHandler');
+const authenticateToken = require('../utils/authenticateToken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -32,9 +33,18 @@ const upload = configureMulter(uploadPath, [], 10 * 1024 * 1024);
 const sponsorUpload = configureMulter(sponsorUploadPath, ['image/jpeg', 'image/png', 'image/gif'], 5 * 1024 * 1024);
 
 // Map routes
-router.put('/livemap/update', (req, res) => {
+router.put('/livemap/update', authenticateToken, (req, res) => {
     const {id, field, value} = req.body;
     if (!id || !field || !value) return errorHandler.handleValidationError('Missing parameters', res);
+
+    const allowedFields = ['mapname', 'maptime'];
+    if (!allowedFields.includes(field)) {
+        return errorHandler.handleValidationError('Invalid map field', res);
+    }
+
+    if (field === 'maptime' && !/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(value)) {
+        return errorHandler.handleValidationError('Invalid map time format. Expected HH:MM:SS.', res);
+    }
 
     connection.query(`UPDATE LiveMap
                       SET ${field} = ?
@@ -44,7 +54,7 @@ router.put('/livemap/update', (req, res) => {
     });
 });
 
-router.delete('/livemap/delete', (req, res) => {
+router.delete('/livemap/delete', authenticateToken, (req, res) => {
     const {id} = req.body;
     if (!id) return errorHandler.handleValidationError('Missing map ID', res);
 
@@ -62,7 +72,7 @@ router.delete('/livemap/delete', (req, res) => {
     });
 });
 
-router.post('/livemap/upload', upload.single('LiveMap'), (req, res) => {
+router.post('/livemap/upload', authenticateToken, upload.single('LiveMap'), (req, res) => {
     const {file, body: {eventid, mapname, maptime}} = req;
     if (!file || !eventid || !mapname || !maptime) return errorHandler.handleValidationError('Fehlende Datei, Event ID, Kartennamen oder Zeit.', res);
 
