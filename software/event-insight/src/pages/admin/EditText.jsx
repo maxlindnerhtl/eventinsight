@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -8,16 +8,13 @@ import "react-quill/dist/quill.snow.css";
 
 const EditText = () => {
     const {id} = useParams();
-    const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [eventText, setEventText] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`http://localhost:3001/events/${id}`)
             .then((res) => {
-                setEvent(res.data);
                 setLoading(false);
             })
             .catch(() => {

@@ -1,16 +1,16 @@
 import React, {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import MarkerHandle from "../../components/MarkerHandler";
+import MarkerHandler from "../../components/MarkerHandler";
 import SearchableSelect from "../../components/SearchableSelect";
 
 const AdminLiveMap = () => {
     const {id} = useParams();
     const [gpxData, setGpxData] = useState([]);
     const [selectedGpx, setSelectedGpx] = useState(null);
-    const [intermediateTimes, setIntermediateTimes] = useState([]);
     const [file, setFile] = useState(null);
     const [mapName, setMapName] = useState("");
     const [time, setTime] = useState("");
@@ -44,7 +44,6 @@ const AdminLiveMap = () => {
         if (!selectedOption) {
             setSelectedGpx(null);
             setIntermediateMarkers([]);
-            setIntermediateTimes([]);
             return;
         }
 
@@ -58,12 +57,6 @@ const AdminLiveMap = () => {
 
             try {
                 const response = await axios.get(`http://localhost:3001/files/intermediateTimes/getByMap?idlivemap=${newGpx.id}`);
-                setIntermediateTimes(response.data.map(marker => ({
-                    latitude: parseFloat(marker.latitude),
-                    longitude: parseFloat(marker.longitude),
-                    position: [parseFloat(marker.latitude), parseFloat(marker.longitude)]
-                })));
-
                 setIntermediateMarkers(response.data.map(marker => ({
                     latitude: parseFloat(marker.latitude),
                     longitude: parseFloat(marker.longitude),
@@ -71,7 +64,6 @@ const AdminLiveMap = () => {
                 })));
             } catch (err) {
                 console.error("Error loading intermediate times:", err);
-                setIntermediateTimes([]);
             }
         }
     };
@@ -94,12 +86,11 @@ const AdminLiveMap = () => {
         formData.append("maptime", time);
 
         try {
-            const response = await fetch("http://localhost:3001/files/livemap/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const messageText = await response.text();
-            alert(messageText);
+            const response = await apiClient.post(
+                "http://localhost:3001/files/livemap/upload",
+                formData
+            );
+            alert(response.data);
         } catch (error) {
             console.error("Fehler:", error);
             alert("Fehler beim Hochladen der Live-Map");
@@ -182,7 +173,7 @@ const AdminLiveMap = () => {
                     <br/>
                     {selectedGpx && selectedGpx.value && (
                         <>
-                            <MarkerHandle
+                            <MarkerHandler
                                 gpxPath={selectedGpx.value}
                                 selectedGpxId={selectedGpx.id}
                                 participantsData={[]}

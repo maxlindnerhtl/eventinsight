@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchableSelect from "../../components/SearchableSelect";
@@ -69,10 +70,15 @@ const AdminEdit = () => {
         }
         try {
             const formattedValue = currentField === 'eventdate' ? new Date(currentValue).toISOString().split('T')[0] : currentValue;
-            const updateUrl = currentField.startsWith('map') ? 'updateMap' : currentField.startsWith('list') ? 'updateList' : 'updateEvent';
             const updateId = currentField.startsWith('map') ? selectedMap.idlivemap : currentField.startsWith('list') ? selectedList.id : id;
-            const endpoint = currentField.startsWith('map') || currentField.startsWith('list') ? `http://localhost:3001/files/livemap/${updateUrl}` : `http://localhost:3001/events/${updateUrl}`;
-            await axios.put(endpoint, {id: updateId, field: currentField, value: formattedValue});
+            const endpoint = currentField.startsWith('map') || currentField.startsWith('list')
+                ? 'http://localhost:3001/files/livemap/update'
+                : 'http://localhost:3001/events/updateEvent';
+            const client = endpoint.includes('/events/updateEvent')
+                || endpoint.includes('/files/livemap/update')
+                ? apiClient
+                : axios;
+            await client.put(endpoint, {id: updateId, field: currentField, value: formattedValue});
             if (currentField.startsWith('map')) setSelectedMap(prev => ({...prev, [currentField]: formattedValue}));
             else if (currentField.startsWith('list')) setSelectedList(prev => ({
                 ...prev,
@@ -91,7 +97,8 @@ const AdminEdit = () => {
 
         try {
             const endpoint = type === 'Map' ? 'http://localhost:3001/files/livemap/delete' : 'http://localhost:3001/files/sponsors/delete';
-            await axios.delete(endpoint, {data: {id}});
+            const client = type === 'Map' ? apiClient : axios;
+            await client.delete(endpoint, {data: {id}});
             if (type === 'Map') {
                 setMaps(prev => prev.filter(item => item.idlivemap !== id));
                 setSelectedMap(null); // Deselect the map
@@ -108,7 +115,7 @@ const AdminEdit = () => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`http://localhost:3001/events/deleteEvent`, {data: {id}});
+            await apiClient.delete(`http://localhost:3001/events/deleteEvent`, {data: {id}});
             navigate('/'); // Redirect to home after deletion
         } catch (error) {
             setError("Fehler beim Löschen des Events");

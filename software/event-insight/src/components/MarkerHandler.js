@@ -15,7 +15,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
     const [isPlacingMarker, setIsPlacingMarker] = useState(false);
 
     useEffect(() => {
-        const loadAndParseGPXDataMarkerHandler = async () => {
+        const loadAndParseGPXData = async () => {
             setIsLoading(true);
             try {
                 const gpxText = await fetchGPXFile(gpxPath);
@@ -29,11 +29,11 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
             }
             setIsLoading(false);
         };
-        loadAndParseGPXDataMarkerHandler();
+        loadAndParseGPXData();
     }, [gpxPath]);
 
     useEffect(() => {
-        const fetchMarkersMarkerHandler = async () => {
+        const fetchMarkers = async () => {
             if (!selectedGpxId) return;
             try {
                 const response = await axios.get(`http://localhost:3001/files/intermediateTimes/getByMap?idlivemap=${selectedGpxId}`);
@@ -51,10 +51,10 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
                 console.error("Error fetching intermediate markers:", error);
             }
         };
-        fetchMarkersMarkerHandler();
+        fetchMarkers();
     }, [selectedGpxId, setIntermediateMarkers]);
 
-    const getPositionFromProgressMarkerHandler = (progress) => {
+    const getPositionFromProgress = (progress) => {
         if (!route.length) return null;
         if (route.length === 1) return route[0];
         const indexFloat = (progress / 100) * (route.length - 1);
@@ -68,7 +68,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
         ];
     };
 
-    const handleMapClickMarkerHandler = (e) => {
+    const handleMapClick = (e) => {
         if (!isAdmin || isPlacingMarker) return;
         setIsPlacingMarker(true);
         const {lat, lng} = e.latlng;
@@ -84,7 +84,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
         setTimeout(() => setIsPlacingMarker(false), 1000);
     };
 
-    const handleDeleteMarkerMarkerHandler = async (markerId, index) => {
+    const handleDeleteMarker = async (markerId, index) => {
         if (!isAdmin) return;
 
         if (markerId) {
@@ -121,12 +121,12 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
                         <Polyline
                             positions={route}
                             pathOptions={{color: "black", weight: 8, opacity: 1, lineCap: "round", lineJoin: "round"}}
-                            eventHandlers={{click: handleMapClickMarkerHandler}}
+                            eventHandlers={{click: handleMapClick}}
                         />
                         <Polyline
                             positions={route}
                             pathOptions={{color: "white", weight: 4, opacity: 1, lineCap: "round", lineJoin: "round"}}
-                            eventHandlers={{click: handleMapClickMarkerHandler}}
+                            eventHandlers={{click: handleMapClick}}
                         />
                     </>
                 )}
@@ -139,7 +139,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
                             <div>
                                 <strong>{marker.name}</strong>
                                 <br/>
-                                <button onClick={() => handleDeleteMarkerMarkerHandler(marker.id, index)} style={{
+                                <button onClick={() => handleDeleteMarker(marker.id, index)} style={{
                                     marginTop: "5px",
                                     padding: "5px 10px",
                                     background: "red",
@@ -155,7 +155,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
                 ))}
 
                 {participantsData && participantsData.map((participant) => {
-                    const position = getPositionFromProgressMarkerHandler(participant.progress);
+                    const position = getPositionFromProgress(participant.progress);
                     if (!position) return null;
                     return <ParticipantMarker key={participant.startnr} participant={{...participant, position}}/>;
                 })}

@@ -5,27 +5,24 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 const AdminLogin = () => {
-    const [isRegistering, setIsRegistering] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-
-    const toggleForm = () => setIsRegistering(prev => !prev);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
         try {
-            const url = isRegistering ? 'http://localhost:3001/admins/createAdmin' : 'http://localhost:3001/admins/login';
-            const {data} = await axios.post(url, {username, password});
+            const {data} = await axios.post(
+                'http://localhost:3001/admins/login',
+                {username, password}
+            );
 
-            if (!isRegistering) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('adminid', data.adminid);
-            }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('adminid', data.adminid);
 
             navigate('/');
         } catch {
@@ -38,7 +35,7 @@ const AdminLogin = () => {
             <Header links={[]}/>
             <main className="main">
                 <div className="form-container">
-                    <h2 className={"admin-title"}>{isRegistering ? 'Admin Registrierung' : 'Admin Login'}</h2>
+                    <h2 className={"admin-title"}>Admin Login</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <input
@@ -61,13 +58,10 @@ const AdminLogin = () => {
                             />
                         </div>
                         <button className="submit-button">
-                            {isRegistering ? 'Registrieren' : 'Login'}
+                            Login
                         </button>
                     </form>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    <button onClick={toggleForm} className="toggle-form-button-admin">
-                        {isRegistering ? 'Login' : 'Registrieren'}
-                    </button>
                 </div>
             </main>
             <Footer/>

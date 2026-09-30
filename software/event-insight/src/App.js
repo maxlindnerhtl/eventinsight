@@ -25,7 +25,7 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<LandingPage/>}/>
-                    <Route path="/addevent" element={<AddEvent/>}/>
+                    <Route path="/addevent" element={<PrivateRoute element={<AddEvent/>}/>}/>
 
                     <Route path="/event/:id" element={<UserHome/>}/>
                     <Route path="/event/:id/userLiveMap" element={<UserLiveMap/>}/>

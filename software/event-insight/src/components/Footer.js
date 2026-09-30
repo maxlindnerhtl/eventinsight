@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
 
 
 const Footer = () => {
     const location = useLocation();
     const isAdminLoginPage = location.pathname === "/adminLogin";
-    const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem("token"));
+    const [isAdmin] = useState(!!localStorage.getItem("token"));
 
     const contacts = [
         {

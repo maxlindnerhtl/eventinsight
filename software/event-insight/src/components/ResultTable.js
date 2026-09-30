@@ -13,7 +13,7 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
     const zwColumns = columns.filter(col => col.match(/^\d+$/)).sort((a, b) => a - b);
     const otherColumns = columns.filter(col => !col.match(/^\d+$/));
 
-    const TimeStringToSeconds = (timeString) => {
+    const timeStringToSeconds = (timeString) => {
         if (!timeString) return Infinity;
         const parts = timeString.split(":").map(part => parseFloat(part.replace(",", ".")));
         let hours = 0, minutes = 0, seconds = 0;
@@ -64,8 +64,8 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
     const calculatePlacement = (data) => {
         return data.sort((a, b) => {
             // Wenn einer der Teilnehmer eine Zielzeit hat und der andere nicht, wird der mit Zielzeit besser platziert
-            const timeA = TimeStringToSeconds(a.Zeit || "");
-            const timeB = TimeStringToSeconds(b.Zeit || "");
+            const timeA = timeStringToSeconds(a.Zeit || "");
+            const timeB = timeStringToSeconds(b.Zeit || "");
 
             if (timeA !== Infinity && timeB === Infinity) return -1; // a hat eine Zeit, b nicht
             if (timeA === Infinity && timeB !== Infinity) return 1;  // b hat eine Zeit, a nicht
@@ -88,8 +88,8 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
             for (let i = Math.max(...Object.keys(a).filter(k => /^ZW\d+$/.test(k)).map(k => parseInt(k.replace('ZW', '')))); i >= 1; i--) {
                 const zWKey = `ZW${i}`;
                 if (a[zWKey] !== "" && b[zWKey] !== "") {
-                    const timeA = TimeStringToSeconds(a[zWKey]);
-                    const timeB = TimeStringToSeconds(b[zWKey]);
+                    const timeA = timeStringToSeconds(a[zWKey]);
+                    const timeB = timeStringToSeconds(b[zWKey]);
 
                     // Der Teilnehmer mit der kleineren Zeit bei der aktuellen ZW wird höher platziert
                     if (timeA < timeB) return -1;
@@ -195,8 +195,8 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
 
                 // Zeitbasierte Spalten
                 if (sortConfig.key === 'Zeit' || sortConfig.key.startsWith('ZW')) {
-                    const timeA = TimeStringToSeconds(aValue);
-                    const timeB = TimeStringToSeconds(bValue);
+                    const timeA = timeStringToSeconds(aValue);
+                    const timeB = timeStringToSeconds(bValue);
                     return sortConfig.direction === 'asc' ? timeA - timeB : timeB - timeA;
                 }
 

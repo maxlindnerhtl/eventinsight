@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";  // Intentionally NOT using apiClient here (see comment below)
 
-// useAPIData is intentionally NOT using apiClient:
+// useApiData is intentionally NOT using apiClient:
 // This hook polls PUBLIC/EXTERNAL endpoints selected by end-users on non-authenticated pages
 // (UserLiveMap, UserResults — both are accessible without login).
 // When an external API returns 401, it doesn't mean the user's session is invalid;
@@ -11,7 +11,7 @@ import axios from "axios";  // Intentionally NOT using apiClient here (see comme
 // to /adminLogin — confusing UX and incorrect behavior.
 // Raw axios allows graceful error handling: log the error and let the component
 // handle it (usually just display no data for that feed).
-const useAPIData = (url, interval = 5000) => {  // Füge Intervall-Parameter hinzu
+const useApiData = (url, interval = 5000) => {  // Füge Intervall-Parameter hinzu
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -39,4 +39,4 @@ const useAPIData = (url, interval = 5000) => {  // Füge Intervall-Parameter hin
     return data;
 };
 
-export default useAPIData;
+export default useApiData;

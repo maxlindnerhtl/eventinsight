@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import user_logo from "../assets/images/Event_Insight_Logo.png";
-import admin_logo from "../assets/images/Event_Insight_Logo_3.png";
+import userLogo from "../assets/images/Event_Insight_Logo.png";
+import adminLogo from "../assets/images/Event_Insight_Logo_3.png";
 
 const Header = ({links}) => {
     const location = useLocation();
@@ -46,7 +46,7 @@ const Header = ({links}) => {
         <header className={`header ${isAdmin || isAdminLoginPage ? "header-admin" : ""}`}>
             <div className="logo-container">
                 <Link to="/" className="LogoLink">
-                    <img src={isAdmin || isAdminLoginPage ? admin_logo : user_logo} alt="Event Insight Logo" className="logo"/>
+                    <img src={isAdmin || isAdminLoginPage ? adminLogo : userLogo} alt="Event Insight Logo" className="logo"/>
                     <h1 className="header-title">Event Insight</h1>
                 </Link>
             </div>

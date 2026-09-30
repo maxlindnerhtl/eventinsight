@@ -17,7 +17,7 @@ const ParticipantMarker = ({participant}) => {
     const {id} = useParams();
 
     // Erstelle den Ergebnis-Link mit Liste und Suchbegriff
-    const ResultPath = `/event/${id}/userResults?list=${encodeURIComponent(listlink)}&search=${encodeURIComponent(`${Vorname} ${Nachname}`)}`;
+    const resultPath = `/event/${id}/userResults?list=${encodeURIComponent(listlink)}&search=${encodeURIComponent(`${Vorname} ${Nachname}`)}`;
 
     // Animationseffekt mit korrekten Abhängigkeiten
     useEffect(() => {
@@ -95,7 +95,7 @@ const ParticipantMarker = ({participant}) => {
                     {(expectedGoalTime != null) && (progress !== 100) && (expectedGoalTime !== "Infinity:NaN:NaN") && (
                         <p><b>Erwartete Zielzeit: </b> {expectedGoalTime}</p>
                     )}
-                    <p><a href={ResultPath}>Zu den Ergebnissen</a></p>
+                    <p><a href={resultPath}>Zu den Ergebnissen</a></p>
                 </div>
             </Popup>
         </Marker>

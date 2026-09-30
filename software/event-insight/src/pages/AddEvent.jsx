@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import apiClient from "../utils/apiClient";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
@@ -7,24 +8,34 @@ const AddEvent = () => {
     const [eventdate, setEventdate] = useState('');
     const [eventlocation, setEventlocation] = useState('');
     const [eventaddress, setEventaddress] = useState('');
-    const adminId = localStorage.getItem('adminid');
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-            const response = await fetch('http://localhost:3001/events/add', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({eventname, eventdate, eventlocation, eventaddress, adminid: adminId}),
+        try {
+            await apiClient.post('/events/add', {
+                eventname,
+                eventdate,
+                eventlocation,
+                eventaddress,
+                adminid: localStorage.getItem('adminid')
             });
 
-            if (response.ok) {
-                alert('Event erfolgreich hinzugefügt!');
-                window.location.href = '/';
-            } else {
-                const errorData = await response.json();
-                alert(`Fehler beim Hinzufügen des Events`);
-            }
+            alert('Event erfolgreich hinzugefügt!');
+            window.location.href = '/';
+        } catch (err) {
+            const errorData = err.response?.data;
+            const backendMessage =
+                errorData?.message ||
+                (typeof errorData?.error === 'string'
+                    ? errorData.error
+                    : errorData?.error?.message);
+
+            alert(
+                backendMessage
+                    ? `Fehler beim Hinzufügen des Events: ${backendMessage}`
+                    : 'Fehler beim Hinzufügen des Events'
+            );
+        }
     };
 
     return (

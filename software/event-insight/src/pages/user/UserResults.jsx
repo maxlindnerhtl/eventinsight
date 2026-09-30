@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
 import ResultTable from "../../components/ResultTable";
-import useAPIData from "../../components/useAPIData";
+import useApiData from "../../components/useApiData";
 import Footer from "../../components/Footer";
 import SearchableSelect from "../../components/SearchableSelect";
 
@@ -26,7 +26,7 @@ const UserResults = () => {
     const [APILink, setAPILink] = useState(initialAPILink);
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [showResults, setShowResults] = useState(initialAPILink !== '');
-    const data = useAPIData(APILink);
+    const data = useApiData(APILink);
 
     useEffect(() => {
         const savedList = localStorage.getItem("selectedList");

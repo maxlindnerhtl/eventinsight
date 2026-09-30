@@ -3,20 +3,14 @@ import {useParams} from "react-router-dom";
 import apiClient from "../../utils/apiClient";
 import { fetchGPXFile } from "../../utils/fetchGPXFile";
 import { parseGPXToFullProfile } from "../../utils/gpxParser";
+import {calculateSpeedAndProgress, timeStringToSeconds} from "../../utils/participantUtils";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import GPXMap from "../../components/GPXMap";
-import useAPIData from "../../components/useAPIData";
+import useApiData from "../../components/useApiData";
 import ParticipantCheckboxes from "../../components/ParticipantCheckboxes";
 import SearchableSelect from "../../components/SearchableSelect";
 import ElevationChart from "../../components/ElevationChart";
-
-const timeStringToSeconds = (timeString) => {
-    const parts = timeString.split(":").map((part) => parseFloat(part.replace(",", ".")));
-    if (parts.length === 2) return parts[0] * 60 + parts[1];
-    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    return 0;
-};
 
 const UserLiveMap = () => {
     const {id} = useParams();
@@ -34,7 +28,7 @@ const UserLiveMap = () => {
         return saved ? new Set(JSON.parse(saved)) : new Set();
     });
     const [searchTerm, setSearchTerm] = useState("");
-    const participantsData = useAPIData(selectedApi?.value || "", 5000);
+    const participantsData = useApiData(selectedApi?.value || "", 5000);
     const [hoverProgress, setHoverProgress] = useState(null);
     const handleHoverProgress = (progress) => {
         if (progress !== hoverProgress) {
@@ -73,7 +67,6 @@ const UserLiveMap = () => {
     useEffect(() => {
         const loadSavedState = () => {
             const savedMap = localStorage.getItem('selectedGpx');
-            const savedParticipants = localStorage.getItem('selectedParticipants');
 
             if (savedMap && gpxData.length > 0) {
                 try {
@@ -99,15 +92,6 @@ const UserLiveMap = () => {
         loadSavedState();
     }, [gpxData]);
 
-    useEffect(() => {
-        if (participantsData && participantsData.length > 0) {
-            const savedParticipants = localStorage.getItem('selectedParticipants');
-            if (savedParticipants) {
-                setSelectedParticipants(new Set(JSON.parse(savedParticipants)));
-            }
-        }
-    }, [participantsData]);
-
     const calculateProgressFromMarker = (marker) => {
         if (!gpxTrackPoints.length || !totalDistance) return 0;
         const markerLat = parseFloat(marker.latitude);
@@ -124,38 +108,6 @@ const UserLiveMap = () => {
             }
         });
         return closestPoint ? (closestPoint.cumDistance / totalDistance) * 100 : 0;
-    };
-
-    const calculateSpeedAndProgress = (participant, totalDistance, elapsedTime) => {
-        if (!totalDistance) return {progress: 0, finished: false, speed: 0};
-        let usedTimeSeconds;
-        let baseProgress;
-        if (participant.Zeit) {
-            usedTimeSeconds = timeStringToSeconds(participant.Zeit);
-            baseProgress = 100;
-        } else if (intermediateMarkers.length > 0) {
-            let checkpointIndex = -1;
-            for (let i = intermediateMarkers.length; i >= 1; i--) {
-                if (participant[i]) {
-                    checkpointIndex = i - 1;
-                    usedTimeSeconds = timeStringToSeconds(participant[i]);
-                    baseProgress = intermediateMarkers[checkpointIndex].progress;
-                    break;
-                }
-            }
-            if (checkpointIndex === -1) {
-                return {progress: 0, finished: false, speed: 0};
-            }
-        } else {
-            return {progress: 0, finished: false, speed: 0};
-        }
-        const baseDistance = (baseProgress / 100) * totalDistance;
-        const speed = usedTimeSeconds > 0 ? baseDistance / usedTimeSeconds : 0;
-
-        const extraTime = Math.max(0, elapsedTime - usedTimeSeconds);
-        const currentDistance = baseDistance + speed * (extraTime);
-        const progress = Math.min(100, (currentDistance / totalDistance) * 100);
-        return {progress, finished: progress >= 100, speed: speed};
     };
 
     useEffect(() => {
@@ -233,8 +185,6 @@ const UserLiveMap = () => {
         });
     };
 
-    const handleSearch = setSearchTerm;
-
     useEffect(() => {
         const fetchGPXData = async () => {
             try {
@@ -279,7 +229,8 @@ const UserLiveMap = () => {
                 const {progress, finished, speed} = calculateSpeedAndProgress(
                     participant,
                     totalDistance,
-                    elapsedTime
+                    elapsedTime,
+                    intermediateMarkers
                 );
                 const expectedGoalTimeInSeconds = totalDistance / speed + timeStringToSeconds(startTime);
                 const hours = Math.floor(expectedGoalTimeInSeconds / 3600);
@@ -346,6 +297,13 @@ const UserLiveMap = () => {
                     </div>
 
                     <div className="map-grid-participants">
+                        <input
+                            type="text"
+                            placeholder="Search participants..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="input-field"
+                        />
                         {selectedGpx && selectedApi && (
                             <ParticipantCheckboxes
                                 participantsData={filteredParticipants}
