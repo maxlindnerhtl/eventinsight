@@ -96,7 +96,21 @@ cd ../frontend
 npm install
 ```
 
-### 4. Anwendung starten
+### 4. Ersten Admin-Account anlegen
+
+Nachdem die Datenbank eingerichtet und die Abhängigkeiten installiert wurden, wird der erste Admin-Account einmalig angelegt, bevor das Backend gestartet wird. Das Seed-Skript liest die Zugangsdaten aus `SEED_ADMIN_USERNAME` und `SEED_ADMIN_PASSWORD`, verweigert die Erstellung eines bereits vorhandenen Benutzernamens und beendet sich nach erfolgreichem Einfügen.
+
+In PowerShell:
+
+```powershell
+$env:SEED_ADMIN_USERNAME = "admin"
+$env:SEED_ADMIN_PASSWORD = "replace-with-a-strong-password"
+npm run seedAdmin
+```
+
+Der Befehl muss im Verzeichnis `software/backend` ausgeführt werden. Die Datenbankverbindungsvariablen müssen zuvor bereits über die `.env`-Datei des Backends verfügbar sein.
+
+### 5. Anwendung starten
 
 Backend und Frontend werden getrennt gestartet:
 

@@ -1,0 +1,9 @@
+software/backend/.env
+software/backend/.env.*
+!software/backend/.env.example
+
+software/backend/node_modules/
+software/event-insight/node_modules/
+software/event-insight/build/
+.idea/
+software/backend/src/uploads/
