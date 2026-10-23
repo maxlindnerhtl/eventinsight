@@ -1,92 +1,78 @@
 .footer {
-    background: linear-gradient(to bottom, #0c67c9, #4091fd); /* Gradient background from top to bottom */
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    font-size: 0.9rem;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.875rem;
     margin-top: auto;
-    box-shadow: 0 -10px 8px rgba(0, 0, 0, 0.3);
 }
 
 .footer-content {
-    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    max-width: var(--content-max);
     margin: 0 auto;
-    padding: 10px;
+    padding: var(--space-4) var(--space-5);
+}
+
+.footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--pill-height);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-control);
+    color: var(--color-primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
 }
 
 .footer-contacts {
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: var(--space-3);
 }
 
 .footer-contact {
-    margin: 0 30px;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
     text-align: left;
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    line-height: 1.6;
 }
 
 .footer-contact h4 {
-    margin: 5px 0;
-    font-size: 1.1rem;
-    font-weight: bold;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0;
 }
 
 .footer-contact a {
-    color: white;
+    color: var(--color-primary);
+    font-size: 0.8125rem;
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
+    overflow-wrap: anywhere;
 }
 
 .footer-contact a:hover {
     text-decoration: underline;
-    color: #d3e0ea;
 }
 
-.footer-links {
-    margin-top: 10px;
-}
+@media (max-width: 639px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: stretch;
+        padding: var(--space-4);
+    }
 
-.footer-links a {
-    color: white;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.footer-links a:hover {
-    background-color: #d3e0ea;
-    color: #0c67c9;
-}
-
-/*-------------------------------------------Admin------------------------------------------*/
-
-.footer.footer-admin {
-    background: linear-gradient(to bottom, #7a9bbf, #b0c4de); /* Gradient background from top to bottom */
-    color: #333333;
-}
-
-
-.footer.footer-admin .footer-contact a {
-    color: #333333;
-
-}
-
-.footer.footer-admin .footer-contact a:hover {
-    color: #333333;
-}
-
-
-.footer.footer-admin .footer-links a {
-    color: #333333;
-
-}
-
-.footer.footer-admin .footer-links a:hover {
-    color: #333333;
+    .footer-contacts {
+        flex-direction: column;
+    }
 }
