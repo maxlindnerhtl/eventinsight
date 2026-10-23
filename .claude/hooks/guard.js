@@ -12,7 +12,8 @@ process.stdin.on('end', () => {
             console.error('BLOCKIERT: git push ist gesperrt, der user pusht selbst');
             process.exit(2);
         }
-        if (/(^|[\s/\\"'=])\.env(\.(?!example\b)[\w.-]+)?($|[\s"'])/i.test(targets)) {
+        // .env as a path segment, delimited by whitespace, quotes, path or shell separators
+        if (/(^|[\s/\\"'=;|&<>$()`*])\.env(\.(?!example\b)[\w.-]+)?($|[\s/\\"'=;|&<>$()`*])/i.test(targets)) {
             console.error('BLOCKIERT: .env darf nicht gelesen oder ausgegeben werden');
             process.exit(2);
         }
