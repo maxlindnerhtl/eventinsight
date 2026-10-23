@@ -3,7 +3,6 @@
         "deny": [
             "Read(**/.env)",
             "Bash(git push:*)",
-            "Bash(git -C:*)",
             "Bash(git reset --hard:*)"
         ]
     },
