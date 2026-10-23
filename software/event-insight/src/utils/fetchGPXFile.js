@@ -30,7 +30,7 @@ export const fetchGPXFile = async (url) => {
     return gpxText;
   } catch (error) {
     console.error(`Error loading GPX file from ${url}:`, error);
-    throw new Error(`Failed to load GPX file: ${error.message}`);
+    throw new Error(`Failed to load GPX file: ${error.message}`, { cause: error });
   }
 };
 

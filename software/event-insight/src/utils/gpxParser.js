@@ -101,7 +101,7 @@ export const parseGPXToFullProfile = (gpxText, options = {}) => {
     return data;
   } catch (error) {
     console.error('Error parsing GPX to full profile:', error);
-    throw new Error(`Failed to parse GPX: ${error.message}`);
+    throw new Error(`Failed to parse GPX: ${error.message}`, { cause: error });
   }
 };
 
@@ -133,6 +133,6 @@ export const parseGPXToTrackCoordinates = (gpxText) => {
     return trackData;
   } catch (error) {
     console.error('Error parsing GPX to track coordinates:', error);
-    throw new Error(`Failed to parse GPX: ${error.message}`);
+    throw new Error(`Failed to parse GPX: ${error.message}`, { cause: error });
   }
 };
