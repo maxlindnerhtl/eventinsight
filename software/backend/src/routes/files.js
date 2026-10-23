@@ -20,24 +20,45 @@ const parseId = (value) => {
     return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
 };
 
-const configureMulter = (storagePath, allowedTypes, sizeLimit) => multer({
-    storage: multer.diskStorage({
-        destination: (_, __, cb) => cb(null, storagePath),
-        filename: (_, file, cb) => cb(null, file.originalname)
-    }),
-    fileFilter: (_, file, cb) => {
-        if (allowedTypes.length === 0 || allowedTypes.includes(file.mimetype)) cb(null, true);
-        else cb(new Error('Invalid file type'));
-    },
-    limits: {fileSize: sizeLimit},
-});
-
 const uploadPath = path.join(__dirname, '../uploads/livemaps');
 const sponsorUploadPath = path.join(__dirname, '../uploads/sponsors');
 createUploadPath(uploadPath);
 createUploadPath(sponsorUploadPath);
 
-const upload = configureMulter(uploadPath, [], 10 * 1024 * 1024);
+// LiveMaps: only .gpx files; the MIME type is not checked because browsers report it inconsistently
+const LIVEMAP_MAX_SIZE = 10 * 1024 * 1024;
+const GPX_SNIFF_BYTES = 4096;
+
+const livemapUpload = multer({
+    storage: multer.diskStorage({
+        destination: (_, __, cb) => cb(null, uploadPath),
+        // Server-generated name: no overwrites, no user-controlled characters in the path
+        filename: (_, __, cb) => cb(null, `${crypto.randomUUID()}.gpx`)
+    }),
+    fileFilter: (_, file, cb) => {
+        if (path.extname(file.originalname).toLowerCase() !== '.gpx') {
+            return cb(new Error('Ungültiger Dateityp. Erlaubt sind nur GPX-Dateien.'));
+        }
+        if (file.originalname.length > 255) {
+            return cb(new Error('Dateiname darf höchstens 255 Zeichen lang sein.'));
+        }
+        cb(null, true);
+    },
+    limits: {fileSize: LIVEMAP_MAX_SIZE},
+});
+
+// The file must start with an XML declaration or <gpx and contain a <gpx element near the start
+const hasGpxContent = (filePath) => {
+    const buffer = Buffer.alloc(GPX_SNIFF_BYTES);
+    const fd = fs.openSync(filePath, 'r');
+    try {
+        const bytesRead = fs.readSync(fd, buffer, 0, GPX_SNIFF_BYTES, 0);
+        const head = buffer.toString('utf8', 0, bytesRead).replace(/^﻿/, '').trimStart();
+        return (head.startsWith('<?xml') || head.startsWith('<gpx')) && head.includes('<gpx');
+    } finally {
+        fs.closeSync(fd);
+    }
+};
 
 // Sponsor images: allowed MIME types with their extensions and magic bytes
 const sponsorImageTypes = {
@@ -126,14 +147,51 @@ router.delete('/livemap/delete', authenticateToken, (req, res) => {
     });
 });
 
-router.post('/livemap/upload', authenticateToken, upload.single('LiveMap'), (req, res) => {
-    const {file, body: {eventid, mapname, maptime}} = req;
-    if (!file || !eventid || !mapname || !maptime) return errorHandler.handleValidationError('Fehlende Datei, Event ID, Kartennamen oder Zeit.', res);
+router.post('/livemap/upload', authenticateToken, (req, res) => {
+    livemapUpload.single('LiveMap')(req, res, (err) => {
+        if (err) {
+            removeUploadedFile(req.file);
+            const message = err.code === 'LIMIT_FILE_SIZE' ? 'Datei ist zu groß (max. 10 MB).' : err.message;
+            return errorHandler.handleValidationError(message, res);
+        }
 
-    const filePath = path.join('uploads/livemaps', file.filename);
-    connection.query('INSERT INTO LiveMap (mapname, mappath, eventid, maptime) VALUES (?, ?, ?, ?)', [mapname, filePath, eventid, maptime], (err) => {
-        if (err) return errorHandler.handleDatabaseError(err, res);
-        res.status(200).send('GPX-Datei erfolgreich hochgeladen');
+        const {file, body: {eventid, mapname, maptime}} = req;
+        const rejectUpload = (message) => {
+            removeUploadedFile(file);
+            errorHandler.handleValidationError(message, res);
+        };
+
+        if (!file || !eventid || !mapname || !maptime) return rejectUpload('Fehlende Datei, Event ID, Kartennamen oder Zeit.');
+
+        if (typeof mapname !== 'string' || !mapname.trim() || mapname.length > 255) {
+            return rejectUpload('Kartenname darf nicht leer sein und höchstens 255 Zeichen haben.');
+        }
+
+        const parsedEventId = parseId(eventid);
+        if (!parsedEventId) return rejectUpload('Event-ID muss eine gültige Zahl sein.');
+
+        // The frontend time input sends HH:MM, the update route uses HH:MM:SS
+        if (typeof maptime !== 'string' || !/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(maptime)) {
+            return rejectUpload('Zeit muss im Format HH:MM oder HH:MM:SS angegeben werden.');
+        }
+
+        let isGpx;
+        try {
+            isGpx = hasGpxContent(file.path);
+        } catch (readErr) {
+            console.error('Hochgeladene Datei konnte nicht gelesen werden:', readErr);
+            isGpx = false;
+        }
+        if (!isGpx) return rejectUpload('Datei ist keine gültige GPX-Datei.');
+
+        const filePath = path.join('uploads/livemaps', file.filename);
+        connection.query('INSERT INTO LiveMap (mapname, mappath, eventid, maptime) VALUES (?, ?, ?, ?)', [mapname, filePath, parsedEventId, maptime], (err) => {
+            if (err) {
+                removeUploadedFile(file);
+                return errorHandler.handleDatabaseError(err, res);
+            }
+            res.status(200).send('GPX-Datei erfolgreich hochgeladen');
+        });
     });
 });
 
