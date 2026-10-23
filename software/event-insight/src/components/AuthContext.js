@@ -1,5 +1,9 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import axios from 'axios';
+import {matchPath} from 'react-router-dom';
+
+// Public routes from App.js; logout on any other path redirects to the admin login
+const PUBLIC_PATHS = ['/', '/event/:id', '/event/:id/userLiveMap', '/event/:id/userResults', '/adminLogin'];
 
 const AuthContext = createContext();
 
@@ -44,12 +48,12 @@ export const AuthProvider = ({children}) => {
     };
 
     const logout = () => {
-        const isAdmin = !!user;
         localStorage.clear();
         setUser(null);
-        
-        const redirectTo = isAdmin ? '/adminLogin' : '/';
-        window.location.href = redirectTo;
+
+        // Decide by path, not by user: after a failed validateToken, user is null on private pages too
+        const isPublicPath = PUBLIC_PATHS.some((pattern) => matchPath(pattern, window.location.pathname));
+        window.location.href = isPublicPath ? '/' : '/adminLogin';
     };
 
     // Listen for 401 errors from apiClient and trigger logout
