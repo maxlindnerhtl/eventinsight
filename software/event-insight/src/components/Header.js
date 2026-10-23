@@ -2,12 +2,14 @@ import React, {useState, useEffect} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import userLogo from "../assets/images/Event_Insight_Logo.png";
 import adminLogo from "../assets/images/Event_Insight_Logo_3.png";
+import {Menu, X} from "lucide-react";
 
 const Header = ({links}) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
     const isLandingPage = location.pathname === "/";
     const isAdminLoginPage = location.pathname === "/adminLogin";
     const isLoggedIn = Boolean(localStorage.getItem("token"));
@@ -44,30 +46,50 @@ const Header = ({links}) => {
 
     return (
         <header className={`header ${isAdmin || isAdminLoginPage ? "header-admin" : ""}`}>
-            <div className="logo-container">
-                <Link to="/" className="LogoLink">
-                    <img src={isAdmin || isAdminLoginPage ? adminLogo : userLogo} alt="Event Insight Logo" className="logo"/>
-                    <h1 className="header-title">Event Insight</h1>
-                </Link>
-            </div>
-            <nav className="links">
-                <ul>
-                    {links.map((link, index) => (
-                        <li key={index} className={`link-item ${location.pathname === link.path ? "active-link" : ""}`}>
-                            <Link to={link.path}>{link.name}</Link>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-            {(isLandingPage || isAdmin) && (
-                <div className="login-container">
-                    {username && <span className="username-display">{username}</span>}
-                    <button onClick={isLoggedIn ? handleLogout : () => navigate("/adminLogin")}
-                            className="login-button">
-                        {isLoggedIn ? "Abmelden" : "Anmelden"}
-                    </button>
+            <div className="header-inner">
+                <div className="logo-container">
+                    <Link to="/" className="LogoLink">
+                        <img src={isAdmin || isAdminLoginPage ? adminLogo : userLogo} alt="Event Insight Logo" className="logo"/>
+                        <h1 className="header-title">Event Insight</h1>
+                    </Link>
+                    <span className="header-badge">Admin</span>
                 </div>
-            )}
+                {links.length > 0 && (
+                    <button
+                        type="button"
+                        className="nav-toggle"
+                        aria-expanded={menuOpen}
+                        aria-controls="header-menu"
+                        aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+                        onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                        {menuOpen ? <X size={24}/> : <Menu size={24}/>}
+                    </button>
+                )}
+                <div
+                    id="header-menu"
+                    className={`header-menu ${menuOpen ? "is-open" : ""} ${links.length === 0 ? "header-menu--static" : ""}`}
+                >
+                    <nav className="links">
+                        <ul>
+                            {links.map((link, index) => (
+                                <li key={index} className={`link-item ${location.pathname === link.path ? "active-link" : ""}`}>
+                                    <Link to={link.path}>{link.name}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                    {(isLandingPage || isAdmin) && (
+                        <div className="login-container">
+                            {username && <span className="username-display">{username}</span>}
+                            <button onClick={isLoggedIn ? handleLogout : () => navigate("/adminLogin")}
+                                    className="login-button">
+                                {isLoggedIn ? "Abmelden" : "Anmelden"}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
         </header>
     );
 };
