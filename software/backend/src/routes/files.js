@@ -171,7 +171,7 @@ router.post('/results/upload', authenticateToken, (req, res) => {
 
     if (typeof listname !== 'string' || listname.length > 255) {
         return errorHandler.handleValidationError(
-            'List name must be a string with at most 255 characters.',
+            'Listenname muss ein Text mit höchstens 255 Zeichen sein.',
             res
         );
     }
@@ -182,23 +182,16 @@ router.post('/results/upload', authenticateToken, (req, res) => {
         !/^https:\/\/api\.raceresult\.com\/\d+\/[A-Za-z0-9]+$/.test(listlink)
     ) {
         return errorHandler.handleValidationError(
-            'List link must be a valid Race Result API link with at most 255 characters.',
+            'Listenlink muss ein gültiger Race-Result-API-Link mit höchstens 255 Zeichen sein.',
             res
         );
     }
 
-    if (!/^\d+$/.test(String(eventid)) || !/^\d+$/.test(String(idlivemap))) {
+    const parsedEventId = parseId(eventid);
+    const parsedLiveMapId = parseId(idlivemap);
+    if (!parsedEventId || !parsedLiveMapId) {
         return errorHandler.handleValidationError(
-            'Event ID and LiveMap ID must be numeric.',
-            res
-        );
-    }
-
-    const parsedEventId = Number(eventid);
-    const parsedLiveMapId = Number(idlivemap);
-    if (!Number.isSafeInteger(parsedEventId) || !Number.isSafeInteger(parsedLiveMapId)) {
-        return errorHandler.handleValidationError(
-            'Event ID and LiveMap ID must be valid integers.',
+            'Event-ID und LiveMap-ID müssen gültige Zahlen sein.',
             res
         );
     }
