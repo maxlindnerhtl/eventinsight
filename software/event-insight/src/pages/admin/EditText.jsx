@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ReactQuill from "react-quill";
@@ -40,7 +41,7 @@ const EditText = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:3001/files/text/upload", {
+            const response = await apiClient.post("/files/text/upload", {
                 idtext: id,
                 text: eventText,
                 eventid: id
@@ -48,7 +49,14 @@ const EditText = () => {
             alert(response.data);
         } catch (error) {
             console.error("Error uploading text:", error);
-            alert("Error uploading text");
+            const errorData = error.response?.data;
+            const backendMessage =
+                errorData?.message ||
+                (typeof errorData?.error === 'string'
+                    ? errorData.error
+                    : errorData?.error?.message);
+
+            alert(backendMessage || "Error uploading text");
         }
     };
 

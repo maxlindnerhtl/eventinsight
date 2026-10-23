@@ -412,22 +412,39 @@ router.get('/text/fetch', (req, res) => {
     });
 });
 
-router.post('/text/upload', (req, res) => {
+const TEXT_MAX_LENGTH = 50000;
+
+router.post('/text/upload', authenticateToken, (req, res) => {
     const {idtext, text, eventid} = req.body;
     if (!idtext || !text || !eventid) {
         return errorHandler.handleValidationError('Missing parameters: idtext, text, or eventid.', res);
     }
 
-    connection.query('SELECT * FROM Text WHERE idtext = ?', [idtext], (err, results) => {
+    const parsedTextId = parseId(idtext);
+    const parsedEventId = parseId(eventid);
+    if (!parsedTextId || !parsedEventId) {
+        return errorHandler.handleValidationError('Text-ID und Event-ID müssen gültige Zahlen sein.', res);
+    }
+
+    // Mirrors the frontend check in EditText.jsx: text must not be empty once tags are stripped
+    if (typeof text !== 'string' || !text.replace(/<\/?[^>]+(>|$)/g, '').trim()) {
+        return errorHandler.handleValidationError('Text darf nicht leer sein.', res);
+    }
+
+    if (text.length > TEXT_MAX_LENGTH) {
+        return errorHandler.handleValidationError(`Text darf höchstens ${TEXT_MAX_LENGTH} Zeichen lang sein.`, res);
+    }
+
+    connection.query('SELECT * FROM Text WHERE idtext = ?', [parsedTextId], (err, results) => {
         if (err) return errorHandler.handleDatabaseError(err, res);
 
         if (results.length > 0) {
-            connection.query('UPDATE Text SET text = ? WHERE idtext = ?', [text, idtext], (err) => {
+            connection.query('UPDATE Text SET text = ? WHERE idtext = ?', [text, parsedTextId], (err) => {
                 if (err) return errorHandler.handleDatabaseError(err, res);
                 res.status(200).send('Text successfully updated.');
             });
         } else {
-            connection.query('INSERT INTO Text (idtext, text, eventid) VALUES (?, ?, ?)', [idtext, text, eventid], (err) => {
+            connection.query('INSERT INTO Text (idtext, text, eventid) VALUES (?, ?, ?)', [parsedTextId, text, parsedEventId], (err) => {
                 if (err) return errorHandler.handleDatabaseError(err, res);
                 res.status(200).send('Text successfully uploaded.');
             });
