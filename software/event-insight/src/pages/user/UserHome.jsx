@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import {sanitizeHtml} from "../../utils/sanitizeHtml";
 
 const UserHome = () => {
     const {id} = useParams();
@@ -77,7 +78,7 @@ const UserHome = () => {
                     </div>
                 </div>
                 {eventText && (
-                    <div className="text-container" dangerouslySetInnerHTML={{__html: eventText}}/>
+                    <div className="text-container" dangerouslySetInnerHTML={{__html: sanitizeHtml(eventText)}}/>
                 )}
             </main>
             <Footer/>
