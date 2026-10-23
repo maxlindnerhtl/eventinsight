@@ -62,7 +62,7 @@ Es gibt keine Tests und kein Backend-Lint-Script. Das Backend braucht `software/
 - In `AdminEdit.jsx` gilt: `loadError` ersetzt die ganze Seite, `actionError` wird nur inline angezeigt. Nicht wieder zusammenlegen.
 
 ## Stand
-Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results, Files/Sponsors, Files/IntermediateTimes, Files/Text. Sponsorbilder werden auf Typ, Endung, Größe und Magic Bytes geprüft und unter einem serverseitig erzeugten UUID-Namen gespeichert. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
+Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results, Files/Sponsors, Files/IntermediateTimes, Files/Text. Sponsorbilder werden auf Typ, Endung, Größe und Magic Bytes geprüft und unter einem serverseitig erzeugten UUID-Namen gespeichert. Livemap-Uploads ebenso: nur `.gpx`, max. 10 MB, Inhalt muss mit `<?xml` oder `<gpx` beginnen, UUID-Name, Aufräumen bei jedem Fehler. Ältere Einträge behalten ihren ursprünglichen `mappath`. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
 
 ## Offen
 - `authenticateToken` antwortet bei fehlendem, ungültigem oder abgelaufenem Token mit 400 statt 401. Der 401-Logout im `apiClient` greift dadurch nie.
@@ -71,6 +71,9 @@ Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Ad
 - `AdminSponsors.fetchSponsors`: Eine Fehlerantwort wird als Liste behandelt (`.map`-Crash)
 - Ownership: `AdminEventAccess`-Check für alle Event-, Map- und Datei-Mutationen, `adminid` aus dem JWT statt aus dem Body, `idlivemap` muss zu `eventid` gehören, `sponsors/updateDisplay` setzt `is_displayed = 1` per ID ohne `eventid`-Filter
 - Löschkaskaden nicht transaktional
+- `/uploads` liefert `.gpx` als XML aus. Direkt im Browser geöffnet, könnte eingebettetes XHTML-Script laufen. Ein `Content-Security-Policy`- oder `Content-Disposition: attachment`-Header für `/uploads` fehlt.
+- Beim Löschen von Livemaps und Sponsoren bleiben die Dateien in `src/uploads` liegen (verwaiste Dateien).
+- `AdminLiveMap.handleSubmit` zeigt bei Upload-Fehlern nur eine allgemeine Meldung, nicht die Backend-Meldung.
 - oxlint-Restbefunde einzeln prüfen: `exhaustive-deps` in ParticipantCheckboxes, SearchableSelect, UserLiveMap, AdminSponsors
 - Frontend: Verschachtelungs-Kandidaten (AdminEdit, UserLiveMap, ResultTable, GPXMap), danach Ordner-für-Ordner-Durchgang
 - Feste `http://localhost:3001`-URLs auf `apiClient`-Pfade bzw. `REACT_APP_API_URL` umstellen
