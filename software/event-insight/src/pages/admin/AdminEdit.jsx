@@ -108,8 +108,7 @@ const AdminEdit = () => {
 
         try {
             const endpoint = type === 'Map' ? 'http://localhost:3001/files/livemap/delete' : 'http://localhost:3001/files/sponsors/delete';
-            const client = type === 'Map' ? apiClient : axios;
-            await client.delete(endpoint, {data: {id}});
+            await apiClient.delete(endpoint, {data: {id}});
             if (type === 'Map') {
                 setMaps(prev => prev.filter(item => item.idlivemap !== id));
                 setSelectedMap(null); // Deselect the map

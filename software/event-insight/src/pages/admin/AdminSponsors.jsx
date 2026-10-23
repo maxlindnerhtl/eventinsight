@@ -2,6 +2,15 @@ import React, {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import apiClient from "../../utils/apiClient";
+
+const getBackendMessage = (error) => {
+    const errorData = error.response?.data;
+    return errorData?.message ||
+        (typeof errorData?.error === 'string'
+            ? errorData.error
+            : errorData?.error?.message);
+};
 
 const AdminSponsors = () => {
     const {id} = useParams();
@@ -44,17 +53,13 @@ const AdminSponsors = () => {
         formData.append("eventid", id);
 
         try {
-            const response = await fetch("http://localhost:3001/files/sponsors/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const result = await response.text();
-            alert(result);
+            const response = await apiClient.post("/files/sponsors/upload", formData);
+            alert(response.data);
             setFile(null);
             setSponsorName("");
             fetchSponsors();
-        } catch {
-            alert("Fehler beim Hochladen der Datei.");
+        } catch (error) {
+            alert(getBackendMessage(error) || "Fehler beim Hochladen der Datei.");
         }
     };
 
@@ -74,15 +79,10 @@ const AdminSponsors = () => {
                 .filter((sponsor) => sponsor.is_displayed === 1)
                 .map((sponsor) => sponsor.idSponsors);
 
-            const response = await fetch(`http://localhost:3001/files/sponsors/updateDisplay`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({eventid: id, displayedSponsors}),
-            });
-            const result = await response.text();
-            alert(result);
-        } catch {
-            alert("Fehler beim Speichern der Sponsoranzeige.");
+            const response = await apiClient.post("/files/sponsors/updateDisplay", {eventid: id, displayedSponsors});
+            alert(response.data);
+        } catch (error) {
+            alert(getBackendMessage(error) || "Fehler beim Speichern der Sponsoranzeige.");
         }
     };
 

@@ -6,10 +6,18 @@ const authenticateToken = require('../utils/authenticateToken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 // Utility functions
 const createUploadPath = (pathName) => {
     if (!fs.existsSync(pathName)) fs.mkdirSync(pathName, {recursive: true});
+};
+
+// Returns a safe positive integer or null
+const parseId = (value) => {
+    if (!/^\d+$/.test(String(value))) return null;
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
 };
 
 const configureMulter = (storagePath, allowedTypes, sizeLimit) => multer({
@@ -30,7 +38,53 @@ createUploadPath(uploadPath);
 createUploadPath(sponsorUploadPath);
 
 const upload = configureMulter(uploadPath, [], 10 * 1024 * 1024);
-const sponsorUpload = configureMulter(sponsorUploadPath, ['image/jpeg', 'image/png', 'image/gif'], 5 * 1024 * 1024);
+
+// Sponsor images: allowed MIME types with their extensions and magic bytes
+const sponsorImageTypes = {
+    'image/jpeg': {extensions: ['.jpg', '.jpeg'], magic: [0xFF, 0xD8, 0xFF]},
+    'image/png': {extensions: ['.png'], magic: [0x89, 0x50, 0x4E, 0x47]},
+    'image/gif': {extensions: ['.gif'], magic: [0x47, 0x49, 0x46, 0x38]},
+};
+const SPONSOR_MAX_SIZE = 5 * 1024 * 1024;
+
+const sponsorUpload = multer({
+    storage: multer.diskStorage({
+        destination: (_, __, cb) => cb(null, sponsorUploadPath),
+        // Server-generated name: no overwrites, no user-controlled characters in the path
+        filename: (_, file, cb) => cb(null, `${crypto.randomUUID()}${sponsorImageTypes[file.mimetype].extensions[0]}`)
+    }),
+    fileFilter: (_, file, cb) => {
+        const type = sponsorImageTypes[file.mimetype];
+        const extension = path.extname(file.originalname).toLowerCase();
+        if (!type || !type.extensions.includes(extension)) {
+            return cb(new Error('Ungültiger Dateityp. Erlaubt sind JPG, PNG und GIF.'));
+        }
+        if (file.originalname.length > 255) {
+            return cb(new Error('Dateiname darf höchstens 255 Zeichen lang sein.'));
+        }
+        cb(null, true);
+    },
+    limits: {fileSize: SPONSOR_MAX_SIZE},
+});
+
+const hasImageSignature = (filePath, mimetype) => {
+    const {magic} = sponsorImageTypes[mimetype];
+    const buffer = Buffer.alloc(magic.length);
+    const fd = fs.openSync(filePath, 'r');
+    try {
+        const bytesRead = fs.readSync(fd, buffer, 0, magic.length, 0);
+        return bytesRead === magic.length && magic.every((byte, i) => buffer[i] === byte);
+    } finally {
+        fs.closeSync(fd);
+    }
+};
+
+const removeUploadedFile = (file) => {
+    if (!file) return;
+    fs.unlink(file.path, (err) => {
+        if (err) console.error('Hochgeladene Datei konnte nicht gelöscht werden:', err);
+    });
+};
 
 // Map routes
 router.put('/livemap/update', authenticateToken, (req, res) => {
@@ -181,26 +235,57 @@ router.get('/results/fetchFromMap', (req, res) => {
 });
 
 // Sponsor routes
-router.delete('/sponsors/delete', (req, res) => {
+router.delete('/sponsors/delete', authenticateToken, (req, res) => {
     const {id} = req.body;
     if (!id) return errorHandler.handleValidationError('Missing sponsor ID', res);
 
-    connection.query('DELETE FROM Sponsors WHERE idSponsors = ?', [id], (err) => {
+    const sponsorId = parseId(id);
+    if (!sponsorId) return errorHandler.handleValidationError('Sponsor-ID muss eine gültige Zahl sein.', res);
+
+    connection.query('DELETE FROM Sponsors WHERE idSponsors = ?', [sponsorId], (err) => {
         if (err) return errorHandler.handleDatabaseError(err, res);
         res.status(200).json({message: 'Sponsor deleted successfully'});
     });
 });
 
-router.post('/sponsors/upload', (req, res) => {
+router.post('/sponsors/upload', authenticateToken, (req, res) => {
     sponsorUpload.single('sponsorFile')(req, res, (err) => {
-        if (err) return errorHandler.handleValidationError(err.message, res);
+        if (err) {
+            removeUploadedFile(req.file);
+            const message = err.code === 'LIMIT_FILE_SIZE' ? 'Datei ist zu groß (max. 5 MB).' : err.message;
+            return errorHandler.handleValidationError(message, res);
+        }
 
         const {file, body: {sponsorname, eventid}} = req;
-        if (!file || !sponsorname || !eventid) return errorHandler.handleValidationError('Missing file, sponsor name, or Event ID.', res);
+        const rejectUpload = (message) => {
+            removeUploadedFile(file);
+            errorHandler.handleValidationError(message, res);
+        };
+
+        if (!file || !sponsorname || !eventid) return rejectUpload('Missing file, sponsor name, or Event ID.');
+
+        if (typeof sponsorname !== 'string' || !sponsorname.trim() || sponsorname.length > 255) {
+            return rejectUpload('Sponsorname darf nicht leer sein und höchstens 255 Zeichen haben.');
+        }
+
+        const parsedEventId = parseId(eventid);
+        if (!parsedEventId) return rejectUpload('Event-ID muss eine gültige Zahl sein.');
+
+        let isImage;
+        try {
+            isImage = hasImageSignature(file.path, file.mimetype);
+        } catch (readErr) {
+            console.error('Hochgeladene Datei konnte nicht gelesen werden:', readErr);
+            isImage = false;
+        }
+        if (!isImage) return rejectUpload('Datei ist kein gültiges Bild.');
 
         const filePath = path.join('uploads/sponsors', file.filename);
-        connection.query('INSERT INTO Sponsors (sponsorname, sponsorpath, eventid, is_displayed) VALUES (?, ?, ?, 0)', [sponsorname, filePath, eventid], (err) => {
-            if (err) return errorHandler.handleDatabaseError(err, res);
+        connection.query('INSERT INTO Sponsors (sponsorname, sponsorpath, eventid, is_displayed) VALUES (?, ?, ?, 0)', [sponsorname, filePath, parsedEventId], (err) => {
+            if (err) {
+                removeUploadedFile(file);
+                return errorHandler.handleDatabaseError(err, res);
+            }
             res.status(200).send('Sponsorenbild erfolgreich hochgeladen');
         });
     });
@@ -216,18 +301,26 @@ router.get('/sponsors', (req, res) => {
     });
 });
 
-router.post('/sponsors/updateDisplay', (req, res) => {
+router.post('/sponsors/updateDisplay', authenticateToken, (req, res) => {
     const {eventid, displayedSponsors} = req.body;
     if (!eventid || !Array.isArray(displayedSponsors)) return errorHandler.handleValidationError('Invalid input.', res);
 
-    connection.query('UPDATE Sponsors SET is_displayed = 0 WHERE eventid = ?', [eventid], (err) => {
+    const parsedEventId = parseId(eventid);
+    if (!parsedEventId) return errorHandler.handleValidationError('Event-ID muss eine gültige Zahl sein.', res);
+
+    const sponsorIds = displayedSponsors.map(parseId);
+    if (sponsorIds.some((sponsorId) => sponsorId === null)) {
+        return errorHandler.handleValidationError('Sponsor-IDs müssen gültige Zahlen sein.', res);
+    }
+
+    connection.query('UPDATE Sponsors SET is_displayed = 0 WHERE eventid = ?', [parsedEventId], (err) => {
         if (err) return errorHandler.handleDatabaseError(err, res);
 
-        if (displayedSponsors.length > 0) {
-            const placeholders = displayedSponsors.map(() => '?').join(',');
+        if (sponsorIds.length > 0) {
+            const placeholders = sponsorIds.map(() => '?').join(',');
             connection.query(`UPDATE Sponsors
                               SET is_displayed = 1
-                              WHERE idSponsors IN (${placeholders})`, displayedSponsors, (err) => {
+                              WHERE idSponsors IN (${placeholders})`, sponsorIds, (err) => {
                 if (err) return errorHandler.handleDatabaseError(err, res);
                 res.status(200).send('Anzeige der Bilder erfolgreich aktualisiert');
             });
