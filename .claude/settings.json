@@ -1,0 +1,34 @@
+{
+    "permissions": {
+        "deny": [
+            "Read(**/.env)",
+            "Bash(git push:*)",
+            "Bash(git reset --hard:*)"
+        ]
+    },
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Bash|Read|Grep|Glob",
+                "hooks": [
+                    { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.js\"" }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [
+                    { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/lint.js\"" }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/lint-changed.js\"" }
+                ]
+            }
+        ]
+    }
+}
