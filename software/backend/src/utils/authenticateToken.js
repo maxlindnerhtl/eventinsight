@@ -10,17 +10,17 @@ if (!secretKey) {
 const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
     if (!authHeader) {
-        return errorHandler.handleValidationError('Authorization header is missing', res);
+        return errorHandler.handleAuthError('Authorization header is missing', res);
     }
 
     const token = authHeader.split(' ')[1];
     if (!token) {
-        return errorHandler.handleValidationError('Token is missing', res);
+        return errorHandler.handleAuthError('Token is missing', res);
     }
 
     jwt.verify(token, secretKey, (err, user) => {
         if (err) {
-            return errorHandler.handleValidationError('Invalid token', res);
+            return errorHandler.handleAuthError('Invalid token', res);
         }
         req.user = user;
         next();

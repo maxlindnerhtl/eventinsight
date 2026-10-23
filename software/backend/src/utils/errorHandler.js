@@ -12,4 +12,11 @@ module.exports = {
             error: message
         });
     },
+
+    handleAuthError: (message, res) => {
+        console.warn("Authentifizierungsfehler:", message);
+        res.status(401).json({
+            error: message
+        });
+    },
 };

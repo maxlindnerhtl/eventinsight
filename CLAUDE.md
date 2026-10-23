@@ -62,10 +62,11 @@ Es gibt keine Tests und kein Backend-Lint-Script. Das Backend braucht `software/
 - In `AdminEdit.jsx` gilt: `loadError` ersetzt die ganze Seite, `actionError` wird nur inline angezeigt. Nicht wieder zusammenlegen.
 
 ## Stand
-Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results, Files/Sponsors, Files/IntermediateTimes, Files/Text. Sponsorbilder werden auf Typ, Endung, Größe und Magic Bytes geprüft und unter einem serverseitig erzeugten UUID-Namen gespeichert. Livemap-Uploads ebenso: nur `.gpx`, max. 10 MB, Inhalt muss mit `<?xml` oder `<gpx` beginnen, UUID-Name, Aufräumen bei jedem Fehler. Ältere Einträge behalten ihren ursprünglichen `mappath`. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
+Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results, Files/Sponsors, Files/IntermediateTimes, Files/Text. Sponsorbilder werden auf Typ, Endung, Größe und Magic Bytes geprüft und unter einem serverseitig erzeugten UUID-Namen gespeichert. Livemap-Uploads ebenso: nur `.gpx`, max. 10 MB, Inhalt muss mit `<?xml` oder `<gpx` beginnen, UUID-Name, Aufräumen bei jedem Fehler. Ältere Einträge behalten ihren ursprünglichen `mappath`. `authenticateToken` antwortet bei fehlendem, ungültigem oder abgelaufenem Token mit 401 (`errorHandler.handleAuthError`), damit greift der 401-Logout im `apiClient`. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
 
 ## Offen
-- `authenticateToken` antwortet bei fehlendem, ungültigem oder abgelaufenem Token mit 400 statt 401. Der 401-Logout im `apiClient` greift dadurch nie.
+- Nächster Schritt: `AuthContext.logout` leitet nach `/` statt `/adminLogin`, wenn `user` noch `null` ist (abgelaufener Token: `PrivateRoute` prüft nur die Existenz des Tokens, `validateToken` scheitert und leert localStorage, der nächste geschützte Aufruf liefert 401). Ziel: Auf PrivateRoute-Seiten immer nach `/adminLogin` leiten, unabhängig von `user`.
+- `GET /auth/validateToken` antwortet bei Auth-Fehlern noch mit 400 (vom Frontend aktuell nicht genutzt).
 - XSS: `UserHome.jsx` rendert den Event-Text per `dangerouslySetInnerHTML` ohne Sanitizing (braucht DOMPurify, also eine neue Dependency)
 - `saveIntermediateTimes` (AdminLiveMap) sendet bei jedem Speichern alle Marker, auch bereits gespeicherte (Duplikate). `handleDeleteMarker` (MarkerHandler) entfernt den Marker lokal auch bei fehlgeschlagenem DELETE.
 - `AdminSponsors.fetchSponsors`: Eine Fehlerantwort wird als Liste behandelt (`.map`-Crash)
