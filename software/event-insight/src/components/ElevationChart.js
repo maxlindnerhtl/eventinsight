@@ -28,7 +28,7 @@ const ElevationChart = ({ gpxPath, participants }) => {
                     elevation: point.elevation,
                 }));
                 setDataPoints(elevationData);
-            } catch (err) {
+            } catch {
                 setError('Fehler beim Laden der GPX-Daten.');
             } finally {
                 setLoading(false);

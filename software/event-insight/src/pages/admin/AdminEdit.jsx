@@ -50,7 +50,7 @@ const AdminEdit = () => {
                 setLists(apiRes.data);
                 setSponsors(sponsorRes.data);
                 setLoading(false);
-            } catch (error) {
+            } catch {
                 setLoadError("Fehler beim Abrufen der Eventdaten");
                 setLoading(false);
             }
@@ -116,7 +116,7 @@ const AdminEdit = () => {
             } else {
                 setSponsors(prev => prev.filter(item => item.idSponsors !== id));
             }
-        } catch (error) {
+        } catch {
             setActionError(`Fehler beim Löschen der ${type}`);
         }
     };
@@ -128,18 +128,20 @@ const AdminEdit = () => {
         try {
             await apiClient.delete(`http://localhost:3001/events/deleteEvent`, {data: {id}});
             navigate('/'); // Redirect to home after deletion
-        } catch (error) {
+        } catch {
             setActionError("Fehler beim Löschen des Events");
         }
     };
 
     const handleSelectChange = (type, selectedOption) => {
         if (!selectedOption) {
-            type === 'map' ? setSelectedMap(null) : setSelectedList(null);
+            if (type === 'map') setSelectedMap(null);
+            else setSelectedList(null);
             return;
         }
         const selected = type === 'map' ? maps.find(map => map.idlivemap === selectedOption.value) : lists.find(list => list.listname === selectedOption.value);
-        type === 'map' ? setSelectedMap(selected) : setSelectedList(selected);
+        if (type === 'map') setSelectedMap(selected);
+        else setSelectedList(selected);
     };
 
     const truncateText = (text, maxLength = 30) => text.length > maxLength ? text.substring(0, maxLength) + '...' : text;

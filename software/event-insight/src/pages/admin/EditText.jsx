@@ -14,7 +14,7 @@ const EditText = () => {
 
     useEffect(() => {
         axios.get(`http://localhost:3001/events/${id}`)
-            .then((res) => {
+            .then(() => {
                 setLoading(false);
             })
             .catch(() => {

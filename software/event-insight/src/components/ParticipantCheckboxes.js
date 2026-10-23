@@ -44,8 +44,7 @@ const ParticipantCheckboxItem = memo(({ startnr, displayName, Zeit, isDisabled, 
 const ParticipantCheckboxes = ({
                                    participantsData,
                                    selectedParticipants,
-                                   onParticipantToggle,
-                                   maxSelectable = 5
+                                   onParticipantToggle
                                }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -64,7 +63,7 @@ const ParticipantCheckboxes = ({
         return [...selectedParticipantsList, ...unselectedParticipantsList];
     }, [participantsData, searchTerm]);
 
-    const isDisabled = (startnr) => false;
+    const isDisabled = () => false;
 
     useEffect(() => {
         const handleKeyDown = (event) => {

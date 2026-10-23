@@ -180,7 +180,8 @@ const UserLiveMap = () => {
         const numericId = Number(startnr);
         setSelectedParticipants(prev => {
             const newSet = new Set(prev);
-            newSet.has(numericId) ? newSet.delete(numericId) : newSet.add(numericId);
+            if (newSet.has(numericId)) newSet.delete(numericId);
+            else newSet.add(numericId);
             return newSet;
         });
     };

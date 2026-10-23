@@ -234,7 +234,7 @@ router.delete('/intermediateTimes/delete', (req, res) => {
     connection.query(
         'DELETE FROM IntermediateTimes WHERE idintermediatetimes = ?',
         [id],
-        (err, result) => {
+        (err) => {
             if (err) return res.status(500).json({error: "Fehler beim Löschen."});
             res.status(200).json({message: "Marker erfolgreich gelöscht."});
         }
