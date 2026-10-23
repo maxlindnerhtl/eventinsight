@@ -62,11 +62,14 @@ Es gibt keine Tests und kein Backend-Lint-Script. Das Backend braucht `software/
 - In `AdminEdit.jsx` gilt: `loadError` ersetzt die ganze Seite, `actionError` wird nur inline angezeigt. Nicht wieder zusammenlegen.
 
 ## Stand
-Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
+Mit `authenticateToken`, Validierung und `apiClient` im Frontend abgesichert: Admin-Routen, Events, Files/Livemap, Files/Results, Files/Sponsors, Files/IntermediateTimes, Files/Text. Sponsorbilder werden auf Typ, Endung, Größe und Magic Bytes geprüft und unter einem serverseitig erzeugten UUID-Namen gespeichert. Secrets liegen in `.env` und wurden rotiert. Löschkaskade in `deleteEvent` korrigiert.
 
 ## Offen
-- Backend: Files/Sponsors, Files/IntermediateTimes, Files/Text (`authenticateToken`, Validierung, Frontend auf `apiClient`, Fehleranzeige prüfen, bei Uploads Dateityp und Dateiname validieren)
-- Ownership: `AdminEventAccess`-Check für alle Event-, Map- und Datei-Mutationen, `adminid` aus dem JWT statt aus dem Body, `idlivemap` muss zu `eventid` gehören
+- `authenticateToken` antwortet bei fehlendem, ungültigem oder abgelaufenem Token mit 400 statt 401. Der 401-Logout im `apiClient` greift dadurch nie.
+- XSS: `UserHome.jsx` rendert den Event-Text per `dangerouslySetInnerHTML` ohne Sanitizing (braucht DOMPurify, also eine neue Dependency)
+- `saveIntermediateTimes` (AdminLiveMap) sendet bei jedem Speichern alle Marker, auch bereits gespeicherte (Duplikate). `handleDeleteMarker` (MarkerHandler) entfernt den Marker lokal auch bei fehlgeschlagenem DELETE.
+- `AdminSponsors.fetchSponsors`: Eine Fehlerantwort wird als Liste behandelt (`.map`-Crash)
+- Ownership: `AdminEventAccess`-Check für alle Event-, Map- und Datei-Mutationen, `adminid` aus dem JWT statt aus dem Body, `idlivemap` muss zu `eventid` gehören, `sponsors/updateDisplay` setzt `is_displayed = 1` per ID ohne `eventid`-Filter
 - Löschkaskaden nicht transaktional
 - oxlint-Restbefunde einzeln prüfen: `exhaustive-deps` in ParticipantCheckboxes, SearchableSelect, UserLiveMap, AdminSponsors
 - Frontend: Verschachtelungs-Kandidaten (AdminEdit, UserLiveMap, ResultTable, GPXMap), danach Ordner-für-Ordner-Durchgang
