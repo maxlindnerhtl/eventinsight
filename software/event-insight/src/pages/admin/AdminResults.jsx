@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import SearchableSelect from "../../components/SearchableSelect";
 
 const AdminResults = () => {
@@ -47,16 +48,26 @@ const AdminResults = () => {
             return;
         }
         try {
-            const response = await fetch("http://localhost:3001/files/results/upload", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({listname: listName, listlink, eventid: id, idlivemap: selectedLiveMap}),
-            });
-            const data = await response.text();
-            alert(data);
+            const response = await apiClient.post(
+                "http://localhost:3001/files/results/upload",
+                {
+                    listname: listName,
+                    listlink,
+                    eventid: id,
+                    idlivemap: selectedLiveMap
+                }
+            );
+            alert(response.data);
         } catch (error) {
             console.error("Fehler beim Hochladen:", error);
-            alert("Fehler beim Hochladen der Daten.");
+            const errorData = error.response?.data;
+            const backendMessage =
+                errorData?.message ||
+                (typeof errorData?.error === 'string'
+                    ? errorData.error
+                    : errorData?.error?.message);
+
+            alert(backendMessage || "Fehler beim Hochladen der Daten.");
         }
     };
 
