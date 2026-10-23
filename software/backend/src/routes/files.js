@@ -105,13 +105,58 @@ router.get('/livemap', (req, res) => {
 });
 
 //Result routes
-router.post('/results/upload', (req, res) => {
+router.post('/results/upload', authenticateToken, (req, res) => {
     const {listname, listlink, eventid, idlivemap} = req.body;
-    if (!listname || !listlink || !eventid || !idlivemap) return errorHandler.handleValidationError('Missing parameters: listname, listlink, eventid, or idlivemap.', res);
-    connection.query('INSERT INTO SimpleAPI (listname, listlink, eventid, idlivemap) VALUES (?, ?, ?, ?)', [listname, listlink, eventid, idlivemap], (err) => {
-        if (err) return errorHandler.handleDatabaseError(err, res);
-        res.status(200).send('API-Link erfolgreich hochgeladen und mit LiveMap verbunden.');
-    });
+
+    if (!listname || !listlink || !eventid || !idlivemap) {
+        return errorHandler.handleValidationError(
+            'Missing parameters: listname, listlink, eventid, or idlivemap.',
+            res
+        );
+    }
+
+    if (typeof listname !== 'string' || listname.length > 255) {
+        return errorHandler.handleValidationError(
+            'List name must be a string with at most 255 characters.',
+            res
+        );
+    }
+
+    if (
+        typeof listlink !== 'string' ||
+        listlink.length > 255 ||
+        !/^https:\/\/api\.raceresult\.com\/\d+\/[A-Za-z0-9]+$/.test(listlink)
+    ) {
+        return errorHandler.handleValidationError(
+            'List link must be a valid Race Result API link with at most 255 characters.',
+            res
+        );
+    }
+
+    if (!/^\d+$/.test(String(eventid)) || !/^\d+$/.test(String(idlivemap))) {
+        return errorHandler.handleValidationError(
+            'Event ID and LiveMap ID must be numeric.',
+            res
+        );
+    }
+
+    const parsedEventId = Number(eventid);
+    const parsedLiveMapId = Number(idlivemap);
+    if (!Number.isSafeInteger(parsedEventId) || !Number.isSafeInteger(parsedLiveMapId)) {
+        return errorHandler.handleValidationError(
+            'Event ID and LiveMap ID must be valid integers.',
+            res
+        );
+    }
+
+    connection.query(
+        'INSERT INTO SimpleAPI (listname, listlink, eventid, idlivemap) VALUES (?, ?, ?, ?)',
+        [listname, listlink, parsedEventId, parsedLiveMapId],
+        (err) => {
+            if (err) return errorHandler.handleDatabaseError(err, res);
+            res.status(200).send('API-Link erfolgreich hochgeladen und mit LiveMap verbunden.');
+        }
+    );
 });
 
 router.get('/results/fetch', (req, res) => {
