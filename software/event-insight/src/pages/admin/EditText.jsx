@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import {sanitizeHtml} from "../../utils/sanitizeHtml";
 
 const EditText = () => {
     const {id} = useParams();
@@ -25,7 +26,7 @@ const EditText = () => {
 
         axios.get(`http://localhost:3001/files/text/fetch?idtext=${id}`)
             .then((res) => {
-                setEventText(res.data.text || "");
+                setEventText(sanitizeHtml(res.data.text || ""));
             })
             .catch(() => {
                 setError("Failed to fetch text data");
