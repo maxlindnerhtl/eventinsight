@@ -331,16 +331,32 @@ router.post('/sponsors/updateDisplay', authenticateToken, (req, res) => {
 });
 
 // Intermediate Times routes
-router.post('/intermediateTimes/add', (req, res) => {
+// Returns a finite number within [min, max] or null
+const parseCoordinate = (value, min, max) => {
+    if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed >= min && parsed <= max ? parsed : null;
+};
+
+router.post('/intermediateTimes/add', authenticateToken, (req, res) => {
     const {idlivemap, latitude, longitude} = req.body;
 
-    if (!idlivemap || !latitude || !longitude) {
+    if (idlivemap == null || latitude == null || longitude == null) {
         return errorHandler.handleValidationError('Fehlende Werte: idlivemap, latitude, longitude.', res);
+    }
+
+    const parsedLiveMapId = parseId(idlivemap);
+    if (!parsedLiveMapId) return errorHandler.handleValidationError('LiveMap-ID muss eine gültige Zahl sein.', res);
+
+    const parsedLatitude = parseCoordinate(latitude, -90, 90);
+    const parsedLongitude = parseCoordinate(longitude, -180, 180);
+    if (parsedLatitude === null || parsedLongitude === null) {
+        return errorHandler.handleValidationError('Breitengrad muss zwischen -90 und 90, Längengrad zwischen -180 und 180 liegen.', res);
     }
 
     connection.query(
         'INSERT INTO IntermediateTimes (idlivemap, latitude, longitude) VALUES (?, ?, ?)',
-        [idlivemap, latitude, longitude],
+        [parsedLiveMapId, parsedLatitude, parsedLongitude],
         (err, result) => {
             if (err) return errorHandler.handleDatabaseError(err, res);
             res.status(200).json({message: "Zwischenzeit erfolgreich gespeichert", id: result.insertId});
@@ -365,13 +381,16 @@ router.get('/intermediateTimes/getByMap', (req, res) => {
     );
 });
 
-router.delete('/intermediateTimes/delete', (req, res) => {
+router.delete('/intermediateTimes/delete', authenticateToken, (req, res) => {
     const {id} = req.query;
     if (!id) return res.status(400).json({error: "Marker ID fehlt."});
 
+    const markerId = parseId(id);
+    if (!markerId) return errorHandler.handleValidationError('Marker-ID muss eine gültige Zahl sein.', res);
+
     connection.query(
         'DELETE FROM IntermediateTimes WHERE idintermediatetimes = ?',
-        [id],
+        [markerId],
         (err) => {
             if (err) return res.status(500).json({error: "Fehler beim Löschen."});
             res.status(200).json({message: "Marker erfolgreich gelöscht."});

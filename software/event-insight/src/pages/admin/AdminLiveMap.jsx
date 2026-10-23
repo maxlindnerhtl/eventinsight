@@ -114,12 +114,19 @@ const AdminLiveMap = () => {
 
                 console.log("Payload being sent:", JSON.stringify(markerData, null, 2));
 
-                await axios.post("http://localhost:3001/files/intermediateTimes/add", markerData);
+                await apiClient.post("/files/intermediateTimes/add", markerData);
             }
             alert("Zwischenzeiten erfolgreich gespeichert!");
         } catch (error) {
             console.error("Fehler beim Speichern der Zwischenzeiten:", error);
-            alert("Fehler beim Speichern der Zwischenzeiten");
+            const errorData = error.response?.data;
+            const backendMessage =
+                errorData?.message ||
+                (typeof errorData?.error === 'string'
+                    ? errorData.error
+                    : errorData?.error?.message);
+
+            alert(backendMessage || "Fehler beim Speichern der Zwischenzeiten");
         }
     };
 

@@ -3,6 +3,7 @@ import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet";
 import StartGoalMarkers from "./StartGoalMarkers";
 import ParticipantMarker from "./ParticipantMarker";
 import axios from "axios";
+import apiClient from "../utils/apiClient";
 import L from "leaflet";
 import {fetchGPXFile} from "../utils/fetchGPXFile";
 import {parseGPXToTrackCoordinates} from "../utils/gpxParser";
@@ -89,7 +90,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
 
         if (markerId) {
             try {
-                await axios.delete(`http://localhost:3001/files/intermediateTimes/delete?id=${markerId}`);
+                await apiClient.delete("/files/intermediateTimes/delete", {params: {id: markerId}});
             } catch (error) {
                 console.error("Error deleting marker from database:", error);
             }
