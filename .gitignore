@@ -8,3 +8,4 @@ software/event-insight/build/
 .idea/
 software/backend/src/uploads/
 .claude/settings.local.json
+.mcp.json
