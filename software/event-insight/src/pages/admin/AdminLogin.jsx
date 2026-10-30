@@ -34,34 +34,40 @@ const AdminLogin = () => {
         <div className="wrapper theme-admin">
             <Header links={[]}/>
             <main className="main">
-                <div className="form-container">
-                    <h2 className={"admin-title"}>Admin Login</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                placeholder="Benutzername eingeben..."
-                                className="input-field"
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Passwort eingeben..."
-                                className="input-field"
-                            />
-                        </div>
-                        <button className="submit-button">
-                            Login
-                        </button>
-                    </form>
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                <div className="page-narrow page-auth">
+                    <div className="card">
+                        <h1 className="page-title">Admin Login</h1>
+                        <form onSubmit={handleSubmit} className="form-stack">
+                            <div className="field">
+                                <label htmlFor="login-username" className="field-label">Benutzername</label>
+                                <input
+                                    id="login-username"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    required
+                                    placeholder="Benutzername eingeben..."
+                                    className="input-field"
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="login-password" className="field-label">Passwort</label>
+                                <input
+                                    id="login-password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Passwort eingeben..."
+                                    className="input-field"
+                                />
+                            </div>
+                            <button className="btn btn-primary btn-block">
+                                Login
+                            </button>
+                        </form>
+                        {errorMessage && <p className="alert alert-error form-message">{errorMessage}</p>}
+                    </div>
                 </div>
             </main>
             <Footer/>

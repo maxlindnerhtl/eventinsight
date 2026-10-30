@@ -605,6 +605,59 @@ h2 {
 .event-text .ql-indent-7 { padding-left: min(21em, 40%); }
 .event-text .ql-indent-8 { padding-left: min(24em, 40%); }
 
+/*-------------------------------Admin forms------------------------------------------*/
+
+.page-auth {
+    max-width: 440px;
+}
+
+.card > .page-title,
+.card > .section-title {
+    margin-bottom: var(--space-5);
+}
+
+.card > .page-title {
+    font-size: 1.5rem;
+}
+
+.form-stack .field {
+    margin-bottom: var(--space-4);
+}
+
+.field .input-field {
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+}
+
+.form-actions .btn {
+    flex: 1 1 100%;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.form-message {
+    margin: var(--space-4) 0 0;
+}
+
+@media (min-width: 640px) {
+    .card > .page-title {
+        font-size: 1.75rem;
+    }
+
+    .form-actions .btn {
+        flex: 0 0 auto;
+    }
+}
+
 /*-------------------------------Legacy (restyled per page in later steps)------------------------------------------*/
 
 .submit-button {
