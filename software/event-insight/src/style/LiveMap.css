@@ -1,117 +1,241 @@
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s, transform 0.2s;
-    margin-bottom: 8px;
+/*-------------------------------------------Layout------------------------------------------*/
+/* Mobile first: map full width, participant list as a bottom sheet, elevation below */
+
+.livemap-select {
+    max-width: 560px;
 }
 
-.checkbox-item:hover {
-    background: #e3f2fd;
-    transform: scale(1.02);
-}
-
-.checkbox-label {
-    font-size: 18px;
-    font-weight: 500;
-    color: #333;
-    cursor: pointer;
-}
-
-.checkbox-input {
-    margin-right: 12px;
-    transform: scale(1.2);
-    accent-color: #0c67c9;
-}
-
-.checkbox-container {
-    width: 43vh;
-    max-height: 120.7vh; /* Adjusted height to prevent checkboxes from spanning the whole page */
-    overflow-y: auto;
-    border: 2px solid #0c67c9;
-    padding: 15px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.livemap-layout {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
+    gap: var(--space-4);
 }
 
-.checkbox-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #0c67c9;
+/* Full-bleed on small screens: cancel the .main side padding */
+.livemap-map {
+    margin: 0 calc(-1 * var(--space-4));
 }
-
-
-.sticky-search {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-    padding: 10px;
-    border-bottom: 2px solid #ddd;
-    border-radius: 12px 12px 0 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/*-------------------------------------------Checkbox------------------------------------------*/
-
-.map-grid-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr; /* Left column larger, right column smaller */
-    grid-template-rows: auto auto; /* Two rows: first for map, second for chart */
-    gap: 20px;
-}
-
-.map-grid-map {
-    grid-column: 1;
-    grid-row: 1;
-    height: 100%; /* Full height for the map */
-    overflow: hidden;
-}
-
-.map-grid-participants {
-    grid-column: 2;
-    grid-row: 1 / span 2; /* Span across both rows */
-    overflow-y: auto;
-    height: auto; /* Adjust to content height */
-}
-
-.map-grid-elevation {
-    grid-column: 1;
-    grid-row: 2;
-    width: 100%;
-    height: auto; /* Ensure the elevation chart is below the map */
-}
-
-/*-------------------------------------------Elevation Chart------------------------------------------*/
-.elevation-chart-wrapper {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 144vh; /* 100% width to adjust with the map */
-    height: 40vh; /* Fixed height for the elevation chart */
-    z-index: 1000;
-    overflow: hidden;
-}
-
 
 /*-------------------------------------------Map Wrapper------------------------------------------*/
 
 .map-wrapper {
+    position: relative;
     width: 100%;
-    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-surface-muted);
+}
+
+/* GPXMap renders its MapContainer at height 100%, so the wrapper needs a fixed height */
+.livemap-map .map-wrapper {
+    height: 60vh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.map-recenter {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 1000;
+}
+
+.map-recenter-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pill-height);
+    height: var(--pill-height);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.map-recenter-button:hover {
+    border-color: var(--color-primary);
+}
+
+/*-------------------------------------------Participants (bottom sheet on mobile)------------------------------------------*/
+
+.participants-card {
+    position: sticky;
+    bottom: 0;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-height: 45vh;
+    margin: 0 calc(-1 * var(--space-4));
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    /* The only shadow in the design: lifts the sheet off the map */
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.12);
+}
+
+.sheet-handle {
+    flex-shrink: 0;
+    align-self: center;
+    width: 40px;
+    height: 4px;
+    margin-bottom: var(--space-1);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-border);
+}
+
+.participants-card > .input-field {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.checkbox-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sticky-search {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding-bottom: var(--space-2);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sticky-search .input-field {
+    margin: 0;
+}
+
+.checkbox-title {
+    margin: var(--space-2) 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.checkbox-item {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--control-height);
+    padding: 0 var(--space-2);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.checkbox-label:hover {
+    background-color: var(--color-row-hover);
+}
+
+.checkbox-input {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--color-primary);
+}
+
+/* Slot is always there; the participant color only fills it when selected */
+.participant-icon {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
+.participant-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.participant-finished {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+}
+
+.participant-nr {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/*-------------------------------------------Elevation Chart------------------------------------------*/
+
+.livemap-elevation {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+}
+
+.elevation-chart-wrapper {
+    width: 100%;
+    height: 240px;
+}
+
+/*-------------------------------------------Desktop------------------------------------------*/
+
+@media (min-width: 640px) {
+    .elevation-chart-wrapper {
+        height: 320px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .livemap-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: var(--space-5);
+    }
+
+    .livemap-map {
+        margin: 0;
+    }
+
+    .livemap-map .map-wrapper {
+        height: 520px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-card);
+    }
+
+    .participants-card {
+        position: static;
+        height: 520px;
+        max-height: none;
+        margin: 0;
+        padding: var(--space-4);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-card);
+        box-shadow: none;
+    }
+
+    .sheet-handle {
+        display: none;
+    }
+
+    .livemap-elevation {
+        grid-column: 1 / -1;
+    }
 }

@@ -16,27 +16,8 @@ const RecenterButton = ({center, zoom}) => {
     };
 
     return (
-        <div style={{position: "absolute", top: "20px", right: "20px", zIndex: 1000}}>
-            <button
-                onClick={handleClick}
-                style={{
-                    backgroundColor: "#2196f3",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "56px",
-                    height: "56px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    fontSize: "24px",
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                    transition: "background-color 0.2s ease",
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1976d2")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2196f3")}
-            >
+        <div className="map-recenter">
+            <button type="button" onClick={handleClick} className="map-recenter-button" aria-label="Karte zentrieren">
                 <FaCrosshairs/>
             </button>
         </div>
@@ -104,7 +85,7 @@ const GPXMap = ({gpxPath, intermediateTimes, participantsData}) => {
             <MapContainer
                 center={center}
                 zoom={zoom}
-                style={{height: "80vh", width: "100%"}}
+                style={{height: "100%", width: "100%"}}
                 maxBounds={[[-90, -180], [90, 180]]}
                 maxBoundsViscosity={1.0}
                 whenCreated={(map) => {

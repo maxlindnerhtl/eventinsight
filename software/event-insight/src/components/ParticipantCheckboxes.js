@@ -9,33 +9,24 @@ const ParticipantCheckboxItem = memo(({ startnr, displayName, Zeit, isDisabled, 
 
     return (
         <div key={startnr} className="checkbox-item">
-            <label
-                className="checkbox-label"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-            >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => onToggle(startnr)}
-                        className="checkbox-input"
-                        disabled={isDisabled}
-                    />
-                    {`${startnr} - ${displayName}${Zeit ? " - finished" : ""}`}
-                </div>
-
-                {isChecked && (
-                    <div
-                        className="participant-icon"
-                        style={{
-                            backgroundColor: color,
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            marginLeft: '10px',
-                        }}
-                    />
-                )}
+            <label className="checkbox-label">
+                <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() => onToggle(startnr)}
+                    className="checkbox-input"
+                    disabled={isDisabled}
+                />
+                <span
+                    className="participant-icon"
+                    style={isChecked ? {backgroundColor: color} : undefined}
+                    aria-hidden="true"
+                />
+                <span className="participant-name">
+                    {displayName}
+                    {Zeit ? <span className="participant-finished"> - finished</span> : null}
+                </span>
+                <span className="participant-nr">{startnr}</span>
             </label>
         </div>
     );
@@ -91,7 +82,7 @@ const ParticipantCheckboxes = ({
     return (
         <div className="checkbox-container">
             <div className="sticky-search">
-                <h4 className="checkbox-title">Läufer auswählen:</h4>
+                <h2 className="checkbox-title">Läufer auswählen</h2>
                 <input
                     type="text"
                     placeholder="Läufer suchen..."

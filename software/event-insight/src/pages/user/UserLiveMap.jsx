@@ -273,53 +273,65 @@ const UserLiveMap = () => {
                 ]}
             />
             <main className="main">
-                {error && <p className="error-message">{error}</p>}
-
-                <SearchableSelect
-                    value={selectedGpx ? {value: selectedGpx.value, label: selectedGpx.label} : null}
-                    options={gpxData.map(({value, label}) => ({value, label}))}
-                    onChange={handleSelectionChange}
-                    placeholder="Select Live-Map..."
-                    minInputLength={2}
-                />
-
-                <br/>
-                <br/>
-
-                <div className="map-grid-container">
-                    <div className="map-grid-map">
-                        {selectedGpx && selectedApi && (
-                            <GPXMap
-                                gpxPath={selectedGpx.value}
-                                intermediateTimes={intermediateMarkers}
-                                participantsData={visibleParticipants}
-                            />
-                        )}
+                <div className="page">
+                    <div className="page-head">
+                        <h1 className="page-title">Live-Karte</h1>
+                        <span className="badge-live">Live</span>
                     </div>
 
-                    <div className="map-grid-participants">
-                        <input
-                            type="text"
-                            placeholder="Search participants..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="input-field"
+                    {error && <p className="error-message">{error}</p>}
+
+                    <div className="livemap-select">
+                        <SearchableSelect
+                            value={selectedGpx ? {value: selectedGpx.value, label: selectedGpx.label} : null}
+                            options={gpxData.map(({value, label}) => ({value, label}))}
+                            onChange={handleSelectionChange}
+                            placeholder="Select Live-Map..."
+                            minInputLength={2}
+                            width="100%"
+                            menuWidth="100%"
                         />
-                        {selectedGpx && selectedApi && (
-                            <ParticipantCheckboxes
-                                participantsData={filteredParticipants}
-                                selectedParticipants={selectedParticipants}
-                                onParticipantToggle={handleParticipantToggle}
+                    </div>
+
+                    <div className="livemap-layout">
+                        <div className="livemap-map">
+                            {selectedGpx && selectedApi && (
+                                <GPXMap
+                                    gpxPath={selectedGpx.value}
+                                    intermediateTimes={intermediateMarkers}
+                                    participantsData={visibleParticipants}
+                                />
+                            )}
+                        </div>
+
+                        <section className="participants-card" aria-label="Teilnehmer">
+                            <div className="sheet-handle" aria-hidden="true"/>
+                            <input
+                                type="text"
+                                placeholder="Search participants..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="input-field"
+                                aria-label="Teilnehmer suchen"
                             />
+                            {selectedGpx && selectedApi && (
+                                <ParticipantCheckboxes
+                                    participantsData={filteredParticipants}
+                                    selectedParticipants={selectedParticipants}
+                                    onParticipantToggle={handleParticipantToggle}
+                                />
+                            )}
+                        </section>
+                        {selectedGpx && (
+                            <div className="livemap-elevation">
+                                <ElevationChart
+                                    gpxPath={selectedGpx.value}
+                                    participants={visibleParticipants}
+                                    onHover={handleHoverProgress}
+                                />
+                            </div>
                         )}
                     </div>
-                    {selectedGpx && (
-                        <ElevationChart
-                            gpxPath={selectedGpx.value}
-                            participants={visibleParticipants}
-                            onHover={handleHoverProgress}
-                        />
-                    )}
                 </div>
             </main>
             <Footer/>
