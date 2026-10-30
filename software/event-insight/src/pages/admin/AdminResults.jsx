@@ -29,7 +29,7 @@ const AdminResults = () => {
                 if (response.data.length > 0) setSelectedLiveMap(response.data[0].idlivemap);
             } catch (err) {
                 console.error("Error fetching live maps:", err);
-                alert("Fehler beim Laden der LiveMaps.");
+                alert("Fehler beim Laden der Live-Karten.");
             }
         };
         fetchLiveMaps();
@@ -103,14 +103,14 @@ const AdminResults = () => {
                                 <span className="field-hint">Format: https://api.raceresult.com/…</span>
                             </div>
                             <div className="field">
-                                <span className="field-label">Live-Map</span>
+                                <span className="field-label">Live-Karte</span>
                                 <SearchableSelect
                                     options={liveMaps.map(map => ({
                                         value: map.idlivemap,
                                         label: map.mapname
                                     }))}
                                     onChange={(selectedOption) => setSelectedLiveMap(selectedOption?.value)}
-                                    placeholder="Live-Map auswählen..."
+                                    placeholder="Karte auswählen…"
                                     width="100%"
                                     menuWidth="100%"
                                 />

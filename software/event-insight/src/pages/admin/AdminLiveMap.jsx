@@ -93,7 +93,7 @@ const AdminLiveMap = () => {
             alert(response.data);
         } catch (error) {
             console.error("Fehler:", error);
-            alert("Fehler beim Hochladen der Live-Map");
+            alert("Fehler beim Hochladen der Live-Karte");
         }
     };
 
@@ -136,7 +136,7 @@ const AdminLiveMap = () => {
             <main className="main">
                 <div className="page">
                     <section className="card card-narrow">
-                        <h1 className="page-title">Live-Map hochladen</h1>
+                        <h1 className="page-title">Live-Karte hochladen</h1>
                         <form onSubmit={handleSubmit} className="form-stack">
                             <div className="field">
                                 <label htmlFor="map-name" className="field-label">Name der Karte</label>
@@ -181,7 +181,7 @@ const AdminLiveMap = () => {
                             <SearchableSelect
                                 options={gpxData.map(({value, label}) => ({value, label, key: value}))}
                                 onChange={handleSelectionChange}
-                                placeholder="Live-Map auswählen..."
+                                placeholder="Karte auswählen…"
                                 minInputLength={2}
                                 width="100%"
                                 menuWidth="100%"
