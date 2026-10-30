@@ -90,51 +90,67 @@ const AdminSponsors = () => {
         <div className="wrapper theme-admin">
             <Header links={links}/>
             <main className="main">
-                <div className="form-container">
-                    <h2 className="admin-title">Sponsorbild hochladen</h2>
-                    <form onSubmit={handleSubmit} className="form">
-                        <input
-                            type="text"
-                            value={sponsorName}
-                            onChange={(e) => setSponsorName(e.target.value)}
-                            placeholder="Name des Sponsors"
-                            className="input-field"
-                            required
-                        />
-                        <input
-                            type="file"
-                            name="sponsorFile"
-                            onChange={(e) => setFile(e.target.files[0])}
-                            className="input-field"
-                            accept="image/*"
-                            required
-                        />
-                        <button className="submit-button">Hochladen</button>
-                    </form>
-                </div>
-
-                <div className="form-container">
-                    <h2 className="admin-title">Sponsorenliste</h2>
-                    <ul className="sponsor-list">
-                        {sponsorList.map((sponsor) => (
-                            <li key={sponsor.idSponsors} className="sponsor-item">
+                <div className="page-narrow">
+                    <section className="card">
+                        <h1 className="page-title">Sponsorbild hochladen</h1>
+                        <form onSubmit={handleSubmit} className="form-stack">
+                            <div className="field">
+                                <label htmlFor="sponsor-name" className="field-label">Name des Sponsors</label>
                                 <input
-                                    type="checkbox"
-                                    checked={sponsor.is_displayed === 1}
-                                    onChange={() => handleSponsorToggle(sponsor.idSponsors)}
+                                    id="sponsor-name"
+                                    type="text"
+                                    value={sponsorName}
+                                    onChange={(e) => setSponsorName(e.target.value)}
+                                    placeholder="Name des Sponsors"
+                                    className="input-field"
+                                    required
                                 />
-                                <img
-                                    src={`http://localhost:3001/${sponsor.sponsorpath}`}
-                                    alt={sponsor.sponsorname}
-                                    className="sponsor-thumbnail"
+                            </div>
+                            <div className="field">
+                                <label htmlFor="sponsor-file" className="field-label">Bilddatei</label>
+                                <input
+                                    id="sponsor-file"
+                                    type="file"
+                                    name="sponsorFile"
+                                    onChange={(e) => setFile(e.target.files[0])}
+                                    className="input-field"
+                                    accept="image/*"
+                                    required
                                 />
-                                <span>{sponsor.sponsorname}</span>
-                            </li>
-                        ))}
-                    </ul>
-                    <button onClick={handleSaveDisplayedSponsors} className="submit-button">
-                        Änderungen speichern
-                    </button>
+                            </div>
+                            <div className="form-actions">
+                                <button className="btn btn-primary">Hochladen</button>
+                            </div>
+                        </form>
+                    </section>
+                    <section className="card">
+                        <h2 className="section-title">Sponsorenliste</h2>
+                        <ul className="sponsor-list">
+                            {sponsorList.map((sponsor) => (
+                                <li key={sponsor.idSponsors} className="sponsor-item">
+                                    <label className="sponsor-item-label">
+                                        <input
+                                            type="checkbox"
+                                            className="sponsor-item-check"
+                                            checked={sponsor.is_displayed === 1}
+                                            onChange={() => handleSponsorToggle(sponsor.idSponsors)}
+                                        />
+                                        <img
+                                            src={`http://localhost:3001/${sponsor.sponsorpath}`}
+                                            alt={sponsor.sponsorname}
+                                            className="sponsor-thumbnail"
+                                        />
+                                        <span className="sponsor-item-name">{sponsor.sponsorname}</span>
+                                    </label>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="form-actions">
+                            <button onClick={handleSaveDisplayedSponsors} className="btn btn-primary">
+                                Änderungen speichern
+                            </button>
+                        </div>
+                    </section>
                 </div>
             </main>
             <Footer/>
