@@ -4,12 +4,14 @@ import axios from "axios";
 import Footer from "../components/Footer";
 import SearchableSelect from "../components/SearchableSelect";
 import Header from "../components/Header";
+import {useAuth} from "../components/AuthContext";
 
 const LandingPage = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const {user} = useAuth();
     const isLoggedIn = !!localStorage.getItem("token");
     const adminId = localStorage.getItem("adminid");
 
@@ -61,7 +63,7 @@ const LandingPage = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="wrapper theme-user">
+        <div className={`wrapper ${user ? "theme-admin" : "theme-user"}`}>
             <Header links={[]}/>
             <main className="main main-flush">
                 <section className="landing-hero">
