@@ -12,12 +12,12 @@
     --color-header-divider: rgba(255, 255, 255, 0.18);
     --color-hero-deco: #2b4a9f;
     --color-accent: #f59e0b;
-    --color-bg: #f4f7fb;
+    --color-bg: #e8edf5;
     --color-surface: #ffffff;
     --color-surface-muted: #f8fafc;
     --color-text: #0f172a;
     --color-text-muted: #475569;
-    --color-border: #e2e8f0;
+    --color-border: #d3dce8;
     --color-danger: #b91c1c;
     --color-danger-border: #fecaca;
     --color-danger-bg: #fef2f2;
@@ -65,8 +65,8 @@
     --color-primary: #334155;
     --color-primary-hover: #1e293b;
     --color-header-bg: #1e293b;
-    --color-bg: #eef0f3;
-    --color-border: #dfe3e8;
+    --color-bg: #e5e8ec;
+    --color-border: #d1d6dd;
     --color-info-bg: #f1f5f9;
     --color-info-border: #cbd5e1;
     --color-rank: #1e293b;
@@ -184,6 +184,40 @@ h2 {
     margin: 0;
     font-size: 1.75rem;
     color: var(--color-text);
+}
+
+/* Card heading with a small primary bar on the left */
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.card-title::before {
+    content: "";
+    flex-shrink: 0;
+    width: 4px;
+    height: 1.1em;
+    border-radius: 2px;
+    background-color: var(--color-primary);
+}
+
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.card-head-meta {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 .section-title {

@@ -306,14 +306,20 @@ const UserLiveMap = () => {
 
                         <section className="participants-card" aria-label="Teilnehmer">
                             <div className="sheet-handle" aria-hidden="true"/>
-                            <input
-                                type="text"
-                                placeholder="Search participants..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="input-field"
-                                aria-label="Teilnehmer suchen"
-                            />
+                            <div className="card-head">
+                                <h2 className="card-title">Läufer</h2>
+                                <span className="card-head-meta">{selectedParticipants.size} ausgewählt</span>
+                            </div>
+                            <div className="participants-search">
+                                <input
+                                    type="text"
+                                    placeholder="Läufer suchen…"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="input-field"
+                                    aria-label="Läufer suchen"
+                                />
+                            </div>
                             {selectedGpx && selectedApi && (
                                 <ParticipantCheckboxes
                                     participantsData={filteredParticipants}
@@ -324,6 +330,7 @@ const UserLiveMap = () => {
                         </section>
                         {selectedGpx && (
                             <div className="livemap-elevation">
+                                <h2 className="card-title">Höhenprofil</h2>
                                 <ElevationChart
                                     gpxPath={selectedGpx.value}
                                     participants={visibleParticipants}

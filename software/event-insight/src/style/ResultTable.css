@@ -66,8 +66,6 @@
 .table-card .group-title {
     margin: 0;
     padding: var(--space-4);
-    font-size: 1.125rem;
-    color: var(--color-text);
     border-bottom: 1px solid var(--color-border);
 }
 

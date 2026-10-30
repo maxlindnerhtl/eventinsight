@@ -82,7 +82,6 @@ const ParticipantCheckboxes = ({
     return (
         <div className="checkbox-container">
             <div className="sticky-search">
-                <h2 className="checkbox-title">Läufer auswählen</h2>
                 <input
                     type="text"
                     placeholder="Läufer suchen..."
@@ -93,7 +92,7 @@ const ParticipantCheckboxes = ({
             </div>
 
             {filteredData.length === 0 ? (
-                <p>No participants found</p>
+                <p className="participants-empty">Keine Läufer gefunden</p>
             ) : (
                 filteredData.map(({ Vorname, Nachname, startnr, Zeit }) => {
                     const displayName = Vorname ? `${Vorname} ${Nachname}` : Nachname;

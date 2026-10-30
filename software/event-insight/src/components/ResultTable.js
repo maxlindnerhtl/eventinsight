@@ -217,7 +217,7 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
 
         return (
             <div key={title} className="card table-card">
-                <h2 className="group-title">{title}</h2>
+                <h2 className="group-title card-title">{title}</h2>
                 <div className="table-scroll">
                 <table className="result-table">
                     <thead className="table-head">

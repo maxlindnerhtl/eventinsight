@@ -6,6 +6,15 @@ import { fetchGPXFile } from '../utils/fetchGPXFile';
 
 Chart.register(LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend);
 
+// Chart.js draws on canvas and cannot read CSS variables; these mirror the user theme tokens
+const CHART_COLORS = {
+    line: '#1d4ed8', // --color-primary
+    grid: '#e2e8f0', // light grid, intentionally lighter than --color-border
+    text: '#475569', // --color-text-muted
+    strong: '#0f172a', // --color-text
+    surface: '#ffffff', // --color-surface
+};
+
 const getColorFromParticipant = (startnr) => {
     const hue = (startnr * 137) % 360;
     return `hsl(${hue}, 100%, 50%)`;
@@ -50,14 +59,14 @@ const ElevationChart = ({ gpxPath, participants }) => {
             {
                 label: 'Elevation',
                 data: dataPoints.map((dp) => ({ x: dp.distance / 1000, y: dp.elevation })),
-                borderColor: '#0c67c9',
+                borderColor: CHART_COLORS.line,
                 borderWidth: 2,
                 fill: false,
                 tension: 0.3,
                 pointRadius: 0,
                 pointHoverRadius: 6,
-                pointHoverBackgroundColor: '#000000',
-                pointHoverBorderColor: '#ffffff',
+                pointHoverBackgroundColor: CHART_COLORS.line,
+                pointHoverBorderColor: CHART_COLORS.surface,
                 pointHoverBorderWidth: 2,
                 order: 2,
             },
@@ -80,7 +89,7 @@ const ElevationChart = ({ gpxPath, participants }) => {
                 }),
                 pointRadius: 7,
                 pointBackgroundColor: participants.map((participant) => getColorFromParticipant(participant.startnr)),
-                pointBorderColor: '#ffffff',
+                pointBorderColor: CHART_COLORS.surface,
                 pointBorderWidth: 2,
                 showLine: false,
                 order: 1,
@@ -94,17 +103,16 @@ const ElevationChart = ({ gpxPath, participants }) => {
         layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
         plugins: {
             legend: { display: false },
+            // The card heading shows the title
             title: {
-                display: true,
+                display: false,
                 text: 'Höhenprofil',
-                color: '#000000',
-                font: { size: 20, weight: 'bold' },
             },
             tooltip: {
                 backgroundColor: 'rgba(255,255,255,0.9)',
-                titleColor: '#000000',
-                bodyColor: '#000000',
-                borderColor: '#666666',
+                titleColor: CHART_COLORS.strong,
+                bodyColor: CHART_COLORS.strong,
+                borderColor: CHART_COLORS.grid,
                 borderWidth: 1,
                 displayColors: false,
                 callbacks: {
@@ -132,32 +140,34 @@ const ElevationChart = ({ gpxPath, participants }) => {
                 type: 'linear',
                 min: 0,
                 max: maxDistanceKm,
-                grid: { color: '#000000' },
+                grid: { color: CHART_COLORS.grid },
+                border: { display: false },
                 ticks: {
                     stepSize: 1,
-                    color: '#000000',
+                    color: CHART_COLORS.text,
                     font: { size: 12 },
                     callback: (value) => value + ' km',
                 },
                 title: {
                     display: true,
                     text: 'Strecke (km)',
-                    color: '#000000',
-                    font: { size: 14, weight: 'bold' },
+                    color: CHART_COLORS.text,
+                    font: { size: 13, weight: '600' },
                 },
             },
             y: {
                 type: 'linear',
-                grid: { color: '#000000' },
+                grid: { color: CHART_COLORS.grid },
+                border: { display: false },
                 ticks: {
-                    color: '#000000',
+                    color: CHART_COLORS.text,
                     font: { size: 12 },
                 },
                 title: {
                     display: true,
                     text: 'Höhenmeter (m)',
-                    color: '#000000',
-                    font: { size: 14, weight: 'bold' },
+                    color: CHART_COLORS.text,
+                    font: { size: 13, weight: '600' },
                 },
             },
         },
