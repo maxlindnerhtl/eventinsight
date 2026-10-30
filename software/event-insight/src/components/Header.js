@@ -49,7 +49,9 @@ const Header = ({links}) => {
             <div className="header-inner">
                 <div className="logo-container">
                     <Link to="/" className="LogoLink">
-                        <img src={isAdmin || isAdminLoginPage ? adminLogo : userLogo} alt="Event Insight Logo" className="logo"/>
+                        {/* Both variants are rendered; the theme class on the page wrapper shows one */}
+                        <img src={userLogo} alt="Event Insight Logo" className="logo logo-user"/>
+                        <img src={adminLogo} alt="" aria-hidden="true" className="logo logo-admin"/>
                         <h1 className="header-title">Event Insight</h1>
                     </Link>
                     <span className="header-badge">Admin</span>

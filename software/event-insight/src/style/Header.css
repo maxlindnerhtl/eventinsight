@@ -42,6 +42,16 @@
     height: 48px;
 }
 
+/* Logo variant follows the page theme, not the login state */
+.logo-admin,
+.theme-admin .logo-user {
+    display: none;
+}
+
+.theme-admin .logo-admin {
+    display: block;
+}
+
 .header-title {
     margin: 0;
     font-size: 1.375rem;
