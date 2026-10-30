@@ -42,46 +42,58 @@ const AddEvent = () => {
         <div className="wrapper theme-admin">
             <Header links={[]}/>
             <main className="main">
-                <div className="form-container">
-                    <h2 className="admin-title">Neues Event hinzufügen</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="Eventname eingeben..."
-                                className="input-field"
-                                value={eventname}
-                                onChange={(e) => setEventname(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="date"
-                                className="input-field"
-                                value={eventdate}
-                                onChange={(e) => setEventdate(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="Ort eingeben..."
-                                className="input-field"
-                                value={eventlocation}
-                                onChange={(e) => setEventlocation(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="Adresse eingeben..."
-                                className="input-field"
-                                value={eventaddress}
-                                onChange={(e) => setEventaddress(e.target.value)}
-                            />
-                        </div>
-                        <button type="submit" className="submit-button">Event hinzufügen</button>
-                    </form>
+                <div className="page-narrow">
+                    <div className="card">
+                        <h1 className="page-title">Neues Event hinzufügen</h1>
+                        <form onSubmit={handleSubmit} className="form-stack">
+                            <div className="field">
+                                <label htmlFor="event-name" className="field-label">Eventname</label>
+                                <input
+                                    id="event-name"
+                                    type="text"
+                                    placeholder="Eventname eingeben..."
+                                    className="input-field"
+                                    value={eventname}
+                                    onChange={(e) => setEventname(e.target.value)}
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="event-date" className="field-label">Datum</label>
+                                <input
+                                    id="event-date"
+                                    type="date"
+                                    className="input-field"
+                                    value={eventdate}
+                                    onChange={(e) => setEventdate(e.target.value)}
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="event-location" className="field-label">Ort</label>
+                                <input
+                                    id="event-location"
+                                    type="text"
+                                    placeholder="Ort eingeben..."
+                                    className="input-field"
+                                    value={eventlocation}
+                                    onChange={(e) => setEventlocation(e.target.value)}
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="event-address" className="field-label">Adresse</label>
+                                <input
+                                    id="event-address"
+                                    type="text"
+                                    placeholder="Adresse eingeben..."
+                                    className="input-field"
+                                    value={eventaddress}
+                                    onChange={(e) => setEventaddress(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-actions">
+                                <button type="submit" className="btn btn-primary">Event hinzufügen</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </main>
             <Footer/>
