@@ -98,21 +98,27 @@ const UserResults = () => {
         <div className="wrapper theme-user">
             <Header links={links} />
             <main className="main">
-                <SearchableSelect
-                    options={apiOptions}
-                    onChange={handleSelectChange}
-                    placeholder="Liste auswählen..."
-                    value={apiOptions.find(option => option.value === APILink)}
-                />
-                <br />
-                {showResults && data.length > 0 && (
-                    <ResultTable
-                        data={data}
-                        searchTerm={searchTerm}
-                        onSearchChange={setSearchTerm}
-                    />
-                )}
-                {showResults && data.length === 0 && <p>No results available for the selected list.</p>}
+                <div className="page">
+                    <h1 className="page-title">Ergebnisse</h1>
+                    <div className="results-select">
+                        <SearchableSelect
+                            options={apiOptions}
+                            onChange={handleSelectChange}
+                            placeholder="Liste auswählen..."
+                            value={apiOptions.find(option => option.value === APILink)}
+                            width="100%"
+                            menuWidth="100%"
+                        />
+                    </div>
+                    {showResults && data.length > 0 && (
+                        <ResultTable
+                            data={data}
+                            searchTerm={searchTerm}
+                            onSearchChange={setSearchTerm}
+                        />
+                    )}
+                    {showResults && data.length === 0 && <p className="results-empty">No results available for the selected list.</p>}
+                </div>
             </main>
             <Footer />
         </div>

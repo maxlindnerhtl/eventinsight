@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const ResultTable = ({ data, searchTerm, onSearchChange }) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: "asc"});
@@ -215,8 +216,9 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
             : sortedData;
 
         return (
-            <div key={title} className="group-container">
+            <div key={title} className="card table-card">
                 <h2 className="group-title">{title}</h2>
+                <div className="table-scroll">
                 <table className="result-table">
                     <thead className="table-head">
                     <tr>
@@ -230,13 +232,13 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
                                     ? (groupMode === "MW" ? "MW Pl" : "AK Pl")
                                     : column}
                                 {sortConfig.key === column && (
-                                    <span className="sort-indicator">
-                    {sortConfig.direction === "asc"
-                        ? "🔼"
-                        : sortConfig.direction === "desc"
-                            ? "🔽"
-                            : ""}
-                  </span>
+                                    <span className="sort-indicator" aria-hidden="true">
+                                        {sortConfig.direction === "asc"
+                                            ? <ChevronUp size={14}/>
+                                            : sortConfig.direction === "desc"
+                                                ? <ChevronDown size={14}/>
+                                                : ""}
+                                    </span>
                                 )}
                             </th>
                         ))}
@@ -258,46 +260,19 @@ const ResultTable = ({ data, searchTerm, onSearchChange }) => {
                     {/* Zusätzliche Zeile als 31. Zeile mit "..." und Knopf */}
                     {sortedData.length > 30 && (
                         <tr>
-                            <td colSpan={orderedColumns.length} style={{ textAlign: "center" }}>
-                                {!isExpanded ? (
-                                    <>
-                                        <span style={{ marginRight: "16px", fontSize: "1rem", color: "#333" }}></span>
-                                        <button
-                                            style={{
-                                                backgroundColor: "#0070f3",
-                                                color: "#fff",
-                                                border: "none",
-                                                borderRadius: "6px",
-                                                padding: "10px 20px",
-                                                fontSize: "1rem",
-                                                cursor: "pointer"
-                                            }}
-                                            onClick={() => toggleGroupExpansion(title)}
-                                        >
-                                            Alle Anzeigen
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button
-                                        style={{
-                                            backgroundColor: "#0070f3",
-                                            color: "#fff",
-                                            border: "none",
-                                            borderRadius: "6px",
-                                            padding: "10px 20px",
-                                            fontSize: "1rem",
-                                            cursor: "pointer"
-                                        }}
-                                        onClick={() => toggleGroupExpansion(title)}
-                                    >
-                                        Verkleinern
-                                    </button>
-                                )}
+                            <td colSpan={orderedColumns.length} className="table-expand-cell">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => toggleGroupExpansion(title)}
+                                >
+                                    {!isExpanded ? "Alle Anzeigen" : "Verkleinern"}
+                                </button>
                             </td>
                         </tr>
                     )}
                     </tbody>
                 </table>
+                </div>
             </div>
         );
     };
