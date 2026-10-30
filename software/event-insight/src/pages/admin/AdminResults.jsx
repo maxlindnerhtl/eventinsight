@@ -75,41 +75,51 @@ const AdminResults = () => {
         <div className="wrapper theme-admin">
             <Header links={links}/>
             <main className="main">
-                <div className="form-container">
-                    <h2 className="admin-title">API-Link hochladen</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                value={listName}
-                                onChange={(e) => setListName(e.target.value)}
-                                placeholder="Name der Liste"
-                                className="input-field"
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="url"
-                                value={listlink}
-                                onChange={(e) => setListlink(e.target.value)}
-                                placeholder="API-Link"
-                                className="input-field"
-                            />
-                        </div>
-                        <div className="input-group">
-                            <SearchableSelect
-                                options={liveMaps.map(map => ({
-                                    value: map.idlivemap,
-                                    label: map.mapname
-                                }))}
-                                onChange={(selectedOption) => setSelectedLiveMap(selectedOption?.value)}
-                                placeholder="Live-Map auswählen..."
-                                width={400}
-                                menuWidth={400}
-                            />
-                        </div>
-                        <button type="submit" className="submit-button">Hochladen</button>
-                    </form>
+                <div className="page-narrow">
+                    <div className="card">
+                        <h1 className="page-title">API-Link hochladen</h1>
+                        <form onSubmit={handleSubmit} className="form-stack">
+                            <div className="field">
+                                <label htmlFor="list-name" className="field-label">Name der Liste</label>
+                                <input
+                                    id="list-name"
+                                    type="text"
+                                    value={listName}
+                                    onChange={(e) => setListName(e.target.value)}
+                                    placeholder="Name der Liste"
+                                    className="input-field"
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="list-link" className="field-label">API-Link</label>
+                                <input
+                                    id="list-link"
+                                    type="url"
+                                    value={listlink}
+                                    onChange={(e) => setListlink(e.target.value)}
+                                    placeholder="API-Link"
+                                    className="input-field"
+                                />
+                                <span className="field-hint">Format: https://api.raceresult.com/…</span>
+                            </div>
+                            <div className="field">
+                                <span className="field-label">Live-Map</span>
+                                <SearchableSelect
+                                    options={liveMaps.map(map => ({
+                                        value: map.idlivemap,
+                                        label: map.mapname
+                                    }))}
+                                    onChange={(selectedOption) => setSelectedLiveMap(selectedOption?.value)}
+                                    placeholder="Live-Map auswählen..."
+                                    width="100%"
+                                    menuWidth="100%"
+                                />
+                            </div>
+                            <div className="form-actions">
+                                <button type="submit" className="btn btn-primary">Hochladen</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </main>
             <Footer/>
