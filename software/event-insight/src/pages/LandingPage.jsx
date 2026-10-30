@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {ArrowRight} from "lucide-react";
 import axios from "axios";
 import Footer from "../components/Footer";
 import SearchableSelect from "../components/SearchableSelect";
@@ -33,7 +34,12 @@ const LandingPage = () => {
                                     {headers}
                                 );
                                 return data.access
-                                    ? {value: event.idevents, label: `${event.eventname} (${event.formatted_date})`}
+                                    ? {
+                                        value: event.idevents,
+                                        label: `${event.eventname} (${event.formatted_date})`,
+                                        eventname: event.eventname,
+                                        formatted_date: event.formatted_date,
+                                    }
                                     : null;
                             })
                         )
@@ -46,6 +52,8 @@ const LandingPage = () => {
                         data.map((event) => ({
                             value: event.idevents,
                             label: `${event.eventname} (${event.formatted_date})`,
+                            eventname: event.eventname,
+                            formatted_date: event.formatted_date,
                         }))
                     );
                 }
@@ -68,10 +76,16 @@ const LandingPage = () => {
             <main className="main main-flush">
                 <section className="landing-hero">
                     <div className="landing-hero-inner">
-                        <h1 className="landing-title">Event auswählen</h1>
+                        <h1 className="landing-title">Läufe live verfolgen</h1>
+                        <span className="landing-accent" aria-hidden="true"/>
                         <p className="landing-lead">Live-Karte, Höhenprofil und Ergebnisse zu jeder Veranstaltung.</p>
-                        <div className="landing-select">
-                            {events.length > 0 ? (
+                    </div>
+                </section>
+                <div className="landing-body">
+                    <div className="card landing-select-card">
+                        {events.length > 0 ? (
+                            <div className="field">
+                                <span className="field-label">Event auswählen</span>
                                 <SearchableSelect
                                     options={events}
                                     onChange={(selectedOption) => {
@@ -88,20 +102,43 @@ const LandingPage = () => {
                                     width="100%"
                                     menuWidth="100%"
                                 />
-                            ) : (
-                                <p className="landing-empty">Keine Events verfügbar.</p>
-                            )}
-                        </div>
-                        {isLoggedIn && adminId && (
+                            </div>
+                        ) : (
+                            <p className="landing-empty">Keine Events verfügbar.</p>
+                        )}
+                    </div>
+                    {isLoggedIn && adminId && (
+                        <div className="landing-admin-action">
                             <button
                                 className="btn btn-on-dark"
                                 onClick={() => navigate('/addEvent')}
                             >
                                 Neues Event anlegen
                             </button>
-                        )}
-                    </div>
-                </section>
+                        </div>
+                    )}
+                    {events.length > 0 && (
+                        <section className="landing-events">
+                            <h2 className="section-title">Alle Events</h2>
+                            <ul className="event-card-list">
+                                {events.map((event) => (
+                                    <li key={event.value}>
+                                        <Link
+                                            to={isLoggedIn ? `/event/${event.value}/adminHome` : `/event/${event.value}`}
+                                            className="card event-card"
+                                        >
+                                            <span className="event-card-text">
+                                                <span className="event-card-name">{event.eventname}</span>
+                                                <span className="event-card-date">{event.formatted_date}</span>
+                                            </span>
+                                            <ArrowRight className="event-card-arrow" size={20} aria-hidden="true"/>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+                </div>
             </main>
             <Footer/>
         </div>

@@ -373,49 +373,157 @@ h2 {
 }
 
 .landing-hero {
-    flex: 1;
     display: flex;
     align-items: center;
+    min-height: 380px;
+    /* Bottom padding leaves room for the select card that overlaps the edge */
+    padding: var(--space-7) var(--space-4) 112px;
     background-color: var(--color-header-bg);
     color: var(--color-header-text);
-    padding: var(--space-7) var(--space-4);
 }
 
 .landing-hero-inner {
     width: 100%;
-    max-width: 560px;
+    max-width: 760px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-4);
+    align-items: center;
 }
 
 .landing-title {
     margin: 0;
-    font-size: clamp(32px, 6vw, 48px);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
     color: var(--color-header-text);
 }
 
+.landing-accent {
+    display: block;
+    width: 80px;
+    height: 4px;
+    margin: var(--space-4) 0;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-accent);
+}
+
 .landing-lead {
-    margin: 0 0 var(--space-2);
+    margin: 0;
     color: var(--color-header-text-muted);
     font-size: 1.0625rem;
 }
 
-.landing-empty {
-    margin: 0;
-    color: var(--color-header-text);
-    font-weight: 600;
+.landing-body {
+    width: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-7);
+    text-align: left;
 }
 
-.landing-hero-inner .btn {
-    align-self: center;
+/* Pulls the card up so it overlaps the bottom edge of the hero */
+.landing-select-card {
+    position: relative;
+    max-width: 560px;
+    margin: -72px auto 0;
+}
+
+.landing-select-card .field {
+    margin-bottom: 0;
+}
+
+.landing-empty {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-align: center;
+}
+
+.landing-admin-action {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-4);
+}
+
+/* btn-on-dark is white; on the light page background it needs an edge */
+.landing-admin-action .btn-on-dark {
+    border-color: var(--color-border);
+}
+
+.landing-events {
+    margin-top: var(--space-7);
+}
+
+.event-card-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+}
+
+.event-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--space-4) var(--space-5);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color 0.15s;
+}
+
+.event-card:hover {
+    border-color: var(--color-primary);
+}
+
+.event-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.event-card-name {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.event-card-date {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.event-card-arrow {
+    flex-shrink: 0;
+    color: var(--color-primary);
 }
 
 @media (min-width: 640px) {
     .landing-hero {
-        padding: var(--space-7) var(--space-5);
+        padding-left: var(--space-5);
+        padding-right: var(--space-5);
+    }
+
+    .landing-body {
+        padding-left: var(--space-5);
+        padding-right: var(--space-5);
+    }
+
+    .event-card-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .event-card-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
