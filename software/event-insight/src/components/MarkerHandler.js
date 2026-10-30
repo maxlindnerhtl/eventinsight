@@ -109,7 +109,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
             <MapContainer
                 center={center}
                 zoom={14}
-                style={{height: "80vh", width: "100%"}}
+                style={{height: "100%", width: "100%"}}
                 whenCreated={(map) => {
                     map.createPane("start-goal-pane").style.zIndex = 650;
                     map.createPane("intermediate-pane").style.zIndex = 600;
@@ -140,14 +140,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
                             <div>
                                 <strong>{marker.name}</strong>
                                 <br/>
-                                <button onClick={() => handleDeleteMarker(marker.id, index)} style={{
-                                    marginTop: "5px",
-                                    padding: "5px 10px",
-                                    background: "red",
-                                    color: "white",
-                                    border: "none",
-                                    cursor: "pointer"
-                                }}>
+                                <button onClick={() => handleDeleteMarker(marker.id, index)} className="map-popup-delete">
                                     Marker löschen
                                 </button>
                             </div>

@@ -611,6 +611,13 @@ h2 {
     max-width: 440px;
 }
 
+/* A 760px card inside the wide .page container */
+.card-narrow {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .card > .page-title,
 .card > .section-title {
     margin-bottom: var(--space-5);

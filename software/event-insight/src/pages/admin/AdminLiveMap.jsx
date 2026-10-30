@@ -134,65 +134,78 @@ const AdminLiveMap = () => {
         <div className="wrapper theme-admin">
             <Header links={links}/>
             <main className="main">
-                <div className="form-container" style={{marginBottom: "50px"}}>
-                    <h2 className="admin-title">Live-Map hochladen</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Name der Karte"
-                                value={mapName}
-                                onChange={handleMapNameChange}
-                                className="input-field"
+                <div className="page">
+                    <section className="card card-narrow">
+                        <h1 className="page-title">Live-Map hochladen</h1>
+                        <form onSubmit={handleSubmit} className="form-stack">
+                            <div className="field">
+                                <label htmlFor="map-name" className="field-label">Name der Karte</label>
+                                <input
+                                    id="map-name"
+                                    type="text"
+                                    placeholder="Name der Karte"
+                                    value={mapName}
+                                    onChange={handleMapNameChange}
+                                    className="input-field"
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="map-time" className="field-label">Startzeit</label>
+                                <input
+                                    id="map-time"
+                                    type="time"
+                                    value={time}
+                                    onChange={handleTimeChange}
+                                    className="input-field"
+                                    step="60"
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="map-file" className="field-label">GPX-Datei</label>
+                                <input
+                                    id="map-file"
+                                    type="file"
+                                    name="LiveMap"
+                                    onChange={handleFileChange}
+                                    className="input-field"
+                                />
+                            </div>
+                            <div className="form-actions">
+                                <button type="submit" className="btn btn-primary">Hochladen</button>
+                            </div>
+                        </form>
+                    </section>
+                    <section className="card">
+                        <h2 className="section-title">Zwischenzeiten einzeichnen</h2>
+                        <div className="admin-map-select">
+                            <SearchableSelect
+                                options={gpxData.map(({value, label}) => ({value, label, key: value}))}
+                                onChange={handleSelectionChange}
+                                placeholder="Live-Map auswählen..."
+                                minInputLength={2}
+                                width="100%"
+                                menuWidth="100%"
                             />
                         </div>
-                        <div style={{display: 'flex', alignItems: 'center'}}>
-                            <label className="input-label" style={{marginRight: '10px'}}>Startzeit:</label>
-                            <input
-                                type="time"
-                                value={time}
-                                onChange={handleTimeChange}
-                                className="input-field"
-                                step="60"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="file"
-                                name="LiveMap"
-                                onChange={handleFileChange}
-                                className="input-field"
-                            />
-                        </div>
-                        <button type="submit" className="submit-button">Hochladen</button>
-                    </form>
-                </div>
-                <div className="form-container" style={{width: "90vw", maxWidth: "1200px", margin: "auto"}}>
-                    <h2 className="admin-title">Zwischenzeiten einzeichnen</h2>
-                    <SearchableSelect
-                        options={gpxData.map(({value, label}) => ({value, label, key: value}))}
-                        onChange={handleSelectionChange}
-                        placeholder="Live-Map auswählen..."
-                        minInputLength={2}
-                        width="100%"
-                        menuWidth="100%"
-                    />
-                    <br/>
-                    {selectedGpx && selectedGpx.value && (
-                        <>
-                            <MarkerHandler
-                                gpxPath={selectedGpx.value}
-                                selectedGpxId={selectedGpx.id}
-                                participantsData={[]}
-                                isAdmin={true}
-                                setIntermediateMarkers={setIntermediateMarkers}
-                            />
-                            <button onClick={saveIntermediateTimes} className="submit-button"
-                                    style={{marginTop: "20px"}}>
-                                Zwischenzeiten speichern
-                            </button>
-                        </>
-                    )}
+                        {selectedGpx && selectedGpx.value && (
+                            <>
+                                <div className="admin-map">
+                                    <MarkerHandler
+                                        gpxPath={selectedGpx.value}
+                                        selectedGpxId={selectedGpx.id}
+                                        participantsData={[]}
+                                        isAdmin={true}
+                                        setIntermediateMarkers={setIntermediateMarkers}
+                                    />
+                                </div>
+                                <div className="form-actions">
+                                    <button onClick={saveIntermediateTimes} className="btn btn-primary">
+                                        Zwischenzeiten speichern
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </section>
                 </div>
             </main>
             <Footer/>
