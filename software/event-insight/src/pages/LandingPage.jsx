@@ -63,35 +63,43 @@ const LandingPage = () => {
     return (
         <div className="wrapper theme-user">
             <Header links={[]}/>
-            <main className="main">
-                {events.length > 0 ? (
-                    <SearchableSelect
-                        options={events}
-                        onChange={(selectedOption) => {
-                            if (selectedOption) {
-                                navigate(
-                                    isLoggedIn
-                                        ? `/event/${selectedOption.value}/adminHome`
-                                        : `/event/${selectedOption.value}`
-                                );
-                            }
-                        }}
-                        placeholder="Event auswählen..."
-                        minInputLength={1}
-                        width="600px"
-                        menuWidth="600px"
-                    />
-                ) : (
-                    <p>Keine Events verfügbar.</p>
-                )}
-                {isLoggedIn && adminId && (
-                    <button
-                        className="submit-button"
-                        onClick={() => navigate('/addEvent')}
-                    >
-                        Neues Event anlegen
-                    </button>
-                )}
+            <main className="main main-flush">
+                <section className="landing-hero">
+                    <div className="landing-hero-inner">
+                        <h1 className="landing-title">Event auswählen</h1>
+                        <p className="landing-lead">Live-Karte, Höhenprofil und Ergebnisse zu jeder Veranstaltung.</p>
+                        <div className="landing-select">
+                            {events.length > 0 ? (
+                                <SearchableSelect
+                                    options={events}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            navigate(
+                                                isLoggedIn
+                                                    ? `/event/${selectedOption.value}/adminHome`
+                                                    : `/event/${selectedOption.value}`
+                                            );
+                                        }
+                                    }}
+                                    placeholder="Event auswählen..."
+                                    minInputLength={1}
+                                    width="100%"
+                                    menuWidth="100%"
+                                />
+                            ) : (
+                                <p className="landing-empty">Keine Events verfügbar.</p>
+                            )}
+                        </div>
+                        {isLoggedIn && adminId && (
+                            <button
+                                className="btn btn-on-dark"
+                                onClick={() => navigate('/addEvent')}
+                            >
+                                Neues Event anlegen
+                            </button>
+                        )}
+                    </div>
+                </section>
             </main>
             <Footer/>
         </div>

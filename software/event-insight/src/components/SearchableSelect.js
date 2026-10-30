@@ -27,62 +27,68 @@ const SearchableSelect = ({
             onInputChange={(value) => setInputValue(value)}
             value={value}  // Bind value to the selected option
             styles={{
-                control: (provided) => ({
+                control: (provided, state) => ({
                     ...provided,
                     width: width,
-                    borderRadius: '8px',
+                    maxWidth: '100%',
+                    minHeight: 'var(--control-height)',
+                    borderRadius: 'var(--radius-control)',
                     fontWeight: 'normal',
-                    borderColor: '#ccc',
-                    padding: '8px 12px',
+                    borderColor: state.isFocused ? 'var(--color-primary)' : 'var(--color-border)',
+                    boxShadow: state.isFocused ? '0 0 0 1px var(--color-primary)' : 'none',
+                    padding: '0 var(--space-1)',
                     fontSize: '1rem',
-                    color: '#333',
-                    backgroundColor: '#fff',
+                    color: 'var(--color-text)',
+                    backgroundColor: 'var(--color-surface)',
                     textAlign: 'left',
                     ':hover': {
-                        borderColor: '#888',
+                        borderColor: 'var(--color-primary)',
                     },
                 }),
                 menu: (provided) => ({
                     ...provided,
                     width: menuWidth,
+                    maxWidth: '100%',
                     zIndex: 2000,
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.15)',
-                    marginTop: '4px',
+                    borderRadius: 'var(--radius-control)',
+                    border: '1px solid var(--color-border)',
+                    boxShadow: 'none',
+                    marginTop: 'var(--space-1)',
+                    overflow: 'hidden',
                 }),
                 option: (provided, state) => ({
                     ...provided,
-                    padding: '10px 12px',
-                    backgroundColor: state.isSelected ? '#0A3E8C' : state.isFocused ? '#e0e8f8' : '#fff',
-                    color: state.isSelected ? '#fff' : '#333',
+                    padding: 'var(--space-3)',
+                    backgroundColor: state.isSelected ? 'var(--color-primary)' : state.isFocused ? 'var(--color-row-hover)' : 'var(--color-surface)',
+                    color: state.isSelected ? 'var(--color-surface)' : 'var(--color-text)',
                     textAlign: 'left',
                     cursor: 'pointer',
                     ':active': {
-                        backgroundColor: '#d8e6fa',
+                        backgroundColor: 'var(--color-row-hover)',
                     },
                 }),
                 placeholder: (provided) => ({
                     ...provided,
-                    color: '#888',
+                    color: 'var(--color-text-muted)',
                     textAlign: 'left',
                 }),
                 singleValue: (provided) => ({
                     ...provided,
-                    color: '#333',
+                    color: 'var(--color-text)',
                     textAlign: 'left',
                 }),
                 dropdownIndicator: (provided) => ({
                     ...provided,
-                    color: '#888',
+                    color: 'var(--color-text-muted)',
                     ':hover': {
-                        color: '#333',
+                        color: 'var(--color-text)',
                     },
                 }),
                 clearIndicator: (provided) => ({
                     ...provided,
-                    color: '#888',
+                    color: 'var(--color-text-muted)',
                     ':hover': {
-                        color: '#333',
+                        color: 'var(--color-text)',
                     },
                 }),
             }}
