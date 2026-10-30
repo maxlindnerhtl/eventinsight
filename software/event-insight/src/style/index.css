@@ -686,37 +686,10 @@ h2 {
     overflow-wrap: anywhere;
 }
 
-/*-------------------------------Legacy (restyled per page in later steps)------------------------------------------*/
+/*-------------------------------Inputs------------------------------------------*/
 
-.submit-button {
-    min-height: var(--control-height);
-    padding: 0 var(--space-5);
-    background-color: var(--color-primary);
-    color: #ffffff;
-    border: none;
-    font-family: inherit;
-    font-weight: 700;
-    border-radius: var(--radius-control);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.15s;
-    margin-top: var(--space-3);
-}
 
-.submit-button:hover {
-    background-color: var(--color-primary-hover);
-}
 
-.form-container {
-    max-width: 400px;
-    width: 100%;
-    padding: var(--space-5);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    text-align: center;
-    margin-bottom: var(--space-6);
-}
 
 .input-field {
     width: 100%;
@@ -808,45 +781,112 @@ h2 {
 
 /*-------------------------------EditAdmin------------------------------------------*/
 .entry-list {
-    list-style-type: none;
+    list-style: none;
+    margin: 0;
     padding: 0;
 }
 
+.card .entry-list {
+    margin-top: var(--space-3);
+}
+
+/* Mobile: label/value stacked above the action button */
 .entry-list-item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-2);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
     border-bottom: 1px solid var(--color-border);
-    background-color: var(--color-surface-muted);
-    border-radius: var(--radius-badge);
-    margin-bottom: var(--space-2);
+}
+
+.entry-list-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.edit-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.edit-row-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.edit-row-value {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.edit-row-missing {
+    color: var(--color-danger);
+    font-weight: 600;
 }
 
 .edit-window {
     display: flex;
-    align-items: center;
-    gap: var(--space-2);
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
 }
 
-.edit-window input {
-    flex-grow: 1;
-    padding: var(--space-1);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-badge);
+.edit-window .input-field {
+    margin: 0;
 }
 
-.edit-window-button {
-    padding: var(--space-1) var(--space-2);
-    border: none;
-    background-color: var(--color-primary);
-    color: #ffffff;
-    border-radius: var(--radius-badge);
-    cursor: pointer;
+.edit-window-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
 }
 
-.edit-window button:hover {
-    background-color: var(--color-primary-hover);
+.edit-window-actions .btn {
+    flex: 1 1 0;
+}
+
+.edit-window .error-message {
+    margin: 0;
+}
+
+.card-danger {
+    border-color: var(--color-danger-border);
+}
+
+.card-danger .section-title {
+    color: var(--color-danger);
+    margin-bottom: var(--space-2);
+}
+
+.card-danger-text {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+}
+
+@media (min-width: 640px) {
+    .entry-list-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .entry-list-item .btn {
+        flex-shrink: 0;
+    }
+
+    .entry-list-actions {
+        justify-content: flex-end;
+    }
+
+    .edit-window-actions .btn {
+        flex: 0 0 auto;
+    }
 }
 
 /*-------------------------------EditAdmin------------------------------------------*/
@@ -876,13 +916,3 @@ h2 {
 
 /*-------------------------------Text------------------------------------------*/
 
-/*-------------------------------Admin------------------------------------------*/
-
-.admin-title {
-    color: var(--color-primary);
-}
-
-
-
-
-/*-------------------------------Admin------------------------------------------*/

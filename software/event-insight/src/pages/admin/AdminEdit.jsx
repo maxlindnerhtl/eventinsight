@@ -158,66 +158,72 @@ const AdminEdit = () => {
                 {name: "Event bearbeiten", path: `/event/${id}/adminEdit`},
             ]}/>
             <main className="main">
-                <div className="form-container">
-                    <h2 className="admin-title">Event bearbeiten</h2>
-                    <section>
-                        <h3>Event-Informationen</h3>
+                <div className="page-narrow">
+                    <h1 className="page-title">Event bearbeiten</h1>
+                    <section className="card">
+                        <h2 className="section-title">Event-Informationen</h2>
                         <ul className="entry-list">
                             {Object.keys(fieldLabels).slice(0, 4).map(key => (
                                 <li key={key} className="entry-list-item">
                                     {event[key] ? (
                                         isEditWindowOpen && currentField === key ? (
-                                            <div className="edit-window">
-                                                <input type="text" value={currentValue}
-                                                       onChange={e => setCurrentValue(e.target.value)}/>
-                                                <button className="edit-window-button" onClick={handleSave}>Speichern
-                                                </button>
-                                                <button className="edit-window-button"
-                                                        onClick={() => setIsEditWindowOpen(false)}>Abbrechen
-                                                </button>
-                                                {actionError && <p className="error-message">{actionError}</p>}
-                                            </div>
+                                                <div className="edit-window">
+                                                    <input type="text" value={currentValue} className="input-field" aria-label={fieldLabels[key]}
+                                                           onChange={e => setCurrentValue(e.target.value)}/>
+                                                    <div className="edit-window-actions">
+                                                        <button className="btn btn-primary" onClick={handleSave}>Speichern
+                                                        </button>
+                                                        <button className="btn btn-secondary"
+                                                                onClick={() => setIsEditWindowOpen(false)}>Abbrechen
+                                                        </button>
+                                                    </div>
+                                                    {actionError && <p className="error-message">{actionError}</p>}
+                                                </div>
                                         ) : (
-                                            <>
-                                                <span>{fieldLabels[key]}: {truncateText(key === 'eventdate' ? new Date(event[key]).toISOString().split('T')[0] : event[key])}</span>
-                                                <button className="edit-window-button"
-                                                        onClick={() => handleUpdateClick(key, event[key])}>Aktualisieren
-                                                </button>
-                                            </>
+                                                <>
+                                                    <div className="edit-row-text">
+                                                        <span className="edit-row-label">{fieldLabels[key]}</span>
+                                                        <span className="edit-row-value">{truncateText(key === 'eventdate' ? new Date(event[key]).toISOString().split('T')[0] : event[key])}</span>
+                                                    </div>
+                                                    <button className="btn btn-secondary"
+                                                            onClick={() => handleUpdateClick(key, event[key])}>Aktualisieren
+                                                    </button>
+                                                </>
                                         )
                                     ) : (
-                                        <span
-                                            style={{color: 'red'}}>{fieldLabels[key].toLowerCase()} nicht verfügbar</span>)}
+                                        <span className="edit-row-missing">{fieldLabels[key].toLowerCase()} nicht verfügbar</span>)}
                                 </li>
                             ))}
                         </ul>
                     </section>
-                    <section>
-                        <h3>Sponsor-Informationen</h3>
+                    <section className="card">
+                        <h2 className="section-title">Sponsor-Informationen</h2>
                         <ul className="entry-list">
                             {sponsors.length > 0 ? (
                                 sponsors.map(sponsor => (
-                                    <div key={sponsor.idSponsors} className="entry-list-item">
-                                        <span>{fieldLabels.sponsorname}: {sponsor.sponsorname}</span>
-                                        <button className="edit-window-button"
+                                    <li key={sponsor.idSponsors} className="entry-list-item">
+                                        <div className="edit-row-text">
+                                            <span className="edit-row-label">{fieldLabels.sponsorname}</span>
+                                            <span className="edit-row-value">{sponsor.sponsorname}</span>
+                                        </div>
+                                        <button className="btn btn-danger"
                                                 onClick={() => handleDelete('Sponsor', sponsor.idSponsors)}>Löschen
                                         </button>
-                                    </div>
+                                    </li>
                                 ))
                             ) : (
-                                <span className="entry-list-item"
-                                      style={{color: 'red'}}>Sponsoren nicht verfügbar</span>
+                                <li className="entry-list-item edit-row-missing">Sponsoren nicht verfügbar</li>
                             )}
                         </ul>
                     </section>
-                    <section>
-                        <h3>Karten Informationen</h3>
+                    <section className="card">
+                        <h2 className="section-title">Karten Informationen</h2>
                         <SearchableSelect
                             options={maps.map(map => ({value: map.idlivemap, label: map.mapname}))}
                             onChange={option => handleSelectChange('map', option)}
                             placeholder="Karte auswählen"
-                            width="400px"
-                            menuWidth="400px"
+                            width="100%"
+                            menuWidth="100%"
                         />
                         {selectedMap && (
                             <ul className="entry-list">
@@ -225,41 +231,46 @@ const AdminEdit = () => {
                                     <li key={key} className="entry-list-item">
                                         {isEditWindowOpen && currentField === key ? (
                                             <div className="edit-window">
-                                                <input type="text" value={currentValue}
+                                                <input type="text" value={currentValue} className="input-field" aria-label={key === 'mapname' ? 'Kartenname' : 'Kartenzeit'}
                                                        onChange={e => setCurrentValue(e.target.value)}/>
-                                                <button className="edit-window-button" onClick={handleSave}>Speichern
-                                                </button>
-                                                <button className="edit-window-button"
-                                                        onClick={() => setIsEditWindowOpen(false)}>Abbrechen
-                                                </button>
+                                                <div className="edit-window-actions">
+                                                    <button className="btn btn-primary" onClick={handleSave}>Speichern
+                                                    </button>
+                                                    <button className="btn btn-secondary"
+                                                            onClick={() => setIsEditWindowOpen(false)}>Abbrechen
+                                                    </button>
+                                                </div>
                                                 {actionError && <p className="error-message">{actionError}</p>}
                                             </div>
                                         ) : (
                                             <>
-                                                <span>{key === 'mapname' ? 'Kartenname' : 'Kartenzeit'}: {truncateText(selectedMap[key])}</span>
-                                                <button className="edit-window-button"
+                                                <div className="edit-row-text">
+                                                    <span className="edit-row-label">{key === 'mapname' ? 'Kartenname' : 'Kartenzeit'}</span>
+                                                    <span className="edit-row-value">{truncateText(selectedMap[key])}</span>
+                                                </div>
+                                                <button className="btn btn-secondary"
                                                         onClick={() => handleUpdateClick(key, selectedMap[key])}>Aktualisieren
                                                 </button>
                                             </>
                                         )}
                                     </li>
                                 ))}
-                                <li className="entry-list-item">
-                                    <button className="edit-window-button"
+                                <li className="entry-list-item entry-list-actions">
+                                    <button className="btn btn-danger"
                                             onClick={() => handleDelete('Map', selectedMap.idlivemap)}>Karte löschen
                                     </button>
                                 </li>
                             </ul>
                         )}
                     </section>
-                    <section>
-                        <h3>Listen Informationen</h3>
+                    <section className="card">
+                        <h2 className="section-title">Listen Informationen</h2>
                         <SearchableSelect
                             options={lists.map(list => ({value: list.listname, label: list.listname}))}
                             onChange={option => handleSelectChange('list', option)}
                             placeholder="Liste auswählen"
-                            width="400px"
-                            menuWidth="400px"
+                            width="100%"
+                            menuWidth="100%"
                         />
                         {selectedList && (
                             <ul className="entry-list">
@@ -267,19 +278,24 @@ const AdminEdit = () => {
                                     <li key={key} className="entry-list-item">
                                         {isEditWindowOpen && currentField === key ? (
                                             <div className="edit-window">
-                                                <input type="text" value={currentValue}
+                                                <input type="text" value={currentValue} className="input-field" aria-label={key === 'listname' ? 'Listenname' : 'Listenlink'}
                                                        onChange={e => setCurrentValue(e.target.value)}/>
-                                                <button className="edit-window-button" onClick={handleSave}>Speichern
-                                                </button>
-                                                <button className="edit-window-button"
-                                                        onClick={() => setIsEditWindowOpen(false)}>Abbrechen
-                                                </button>
+                                                <div className="edit-window-actions">
+                                                    <button className="btn btn-primary" onClick={handleSave}>Speichern
+                                                    </button>
+                                                    <button className="btn btn-secondary"
+                                                            onClick={() => setIsEditWindowOpen(false)}>Abbrechen
+                                                    </button>
+                                                </div>
                                                 {actionError && <p className="error-message">{actionError}</p>}
                                             </div>
                                         ) : (
                                             <>
-                                                <span>{key === 'listname' ? 'Listenname' : 'Listenlink'}: {truncateText(selectedList[key])}</span>
-                                                <button className="edit-window-button"
+                                                <div className="edit-row-text">
+                                                    <span className="edit-row-label">{key === 'listname' ? 'Listenname' : 'Listenlink'}</span>
+                                                    <span className="edit-row-value">{truncateText(selectedList[key])}</span>
+                                                </div>
+                                                <button className="btn btn-secondary"
                                                         onClick={() => handleUpdateClick(key, selectedList[key])}>Aktualisieren
                                                 </button>
                                             </>
@@ -289,8 +305,10 @@ const AdminEdit = () => {
                             </ul>
                         )}
                     </section>
-                    <section>
-                        <button style={{marginTop: '20px'}} className="edit-window-button"
+                    <section className="card card-danger">
+                        <h2 className="section-title">Event löschen</h2>
+                        <p className="card-danger-text">Das Event wird dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.</p>
+                        <button className="btn btn-danger"
                                 onClick={handleDeleteEvent}>Event löschen
                         </button>
                     </section>
