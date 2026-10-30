@@ -27,7 +27,6 @@ const UserLiveMap = () => {
         const saved = localStorage.getItem('selectedParticipants');
         return saved ? new Set(JSON.parse(saved)) : new Set();
     });
-    const [searchTerm, setSearchTerm] = useState("");
     const participantsData = useApiData(selectedApi?.value || "", 5000);
     const [hoverProgress, setHoverProgress] = useState(null);
     const handleHoverProgress = (progress) => {
@@ -218,14 +217,8 @@ const UserLiveMap = () => {
             timeStringToSeconds(`${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`) -
             timeStringToSeconds(startTime);
 
+        // Search only filters the list inside ParticipantCheckboxes, not the map or the chart
         const enrichedData = participantsData
-            .filter((participant) => {
-                if (!searchTerm) return true;
-                const displayName = participant.Vorname
-                    ? `${participant.Vorname} ${participant.Name}`
-                    : participant.Name;
-                return displayName.toLowerCase().includes(searchTerm.toLowerCase());
-            })
             .map((participant) => {
                 const {progress, finished, speed} = calculateSpeedAndProgress(
                     participant,
@@ -252,7 +245,7 @@ const UserLiveMap = () => {
                 };
             });
         setFilteredParticipants(enrichedData);
-    }, [participantsData, totalDistance, startTime, searchTerm, intermediateMarkers, selectedGpx, selectedApi]);
+    }, [participantsData, totalDistance, startTime, intermediateMarkers, selectedGpx, selectedApi]);
 
     useEffect(() => {
         const interval = setInterval(updateFilteredParticipants, 1000);
@@ -309,16 +302,6 @@ const UserLiveMap = () => {
                             <div className="card-head">
                                 <h2 className="card-title">Läufer</h2>
                                 <span className="card-head-meta">{selectedParticipants.size} ausgewählt</span>
-                            </div>
-                            <div className="participants-search">
-                                <input
-                                    type="text"
-                                    placeholder="Läufer suchen…"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="input-field"
-                                    aria-label="Läufer suchen"
-                                />
                             </div>
                             {selectedGpx && selectedApi && (
                                 <ParticipantCheckboxes

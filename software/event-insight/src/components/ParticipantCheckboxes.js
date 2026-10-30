@@ -84,7 +84,8 @@ const ParticipantCheckboxes = ({
             <div className="sticky-search">
                 <input
                     type="text"
-                    placeholder="Läufer suchen..."
+                    placeholder="Läufer suchen…"
+                    aria-label="Läufer suchen"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="input-field"

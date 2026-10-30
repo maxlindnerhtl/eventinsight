@@ -123,23 +123,6 @@
     margin-bottom: var(--space-3);
 }
 
-/* Both search fields (page and ParticipantCheckboxes) read as one block */
-.participants-search {
-    flex-shrink: 0;
-    padding: var(--space-2) var(--space-2) 0;
-    border-radius: var(--radius-control) var(--radius-control) 0 0;
-    background-color: var(--color-surface-muted);
-}
-
-.participants-card:not(:has(.checkbox-container)) .participants-search {
-    padding-bottom: var(--space-2);
-    border-radius: var(--radius-control);
-}
-
-.participants-search .input-field {
-    margin: 0;
-}
-
 .participants-empty {
     margin: 0;
     padding: var(--space-6) var(--space-4);
@@ -161,7 +144,8 @@
     top: 0;
     z-index: 1;
     padding: var(--space-2);
-    border-radius: 0 0 var(--radius-control) var(--radius-control);
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-control);
     background-color: var(--color-surface-muted);
 }
 
