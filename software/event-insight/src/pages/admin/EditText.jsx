@@ -86,17 +86,24 @@ const EditText = () => {
 
             ]}/>
             <main className="main">
-                <form onSubmit={handleSubmit} className="edit-text-container">
-                    <ReactQuill
-                        value={eventText}
-                        onChange={setEventText}
-                        placeholder="Event-Text bearbeiten..."
-                        className="textarea"
-                        modules={modules}
-                        required
-                    />
-                </form>
-                <button type="submit" className="submit-button" onClick={handleSubmit}>Speichern</button>
+                <div className="page">
+                    <section className="card">
+                        <h1 className="page-title">Event-Text bearbeiten</h1>
+                        <form onSubmit={handleSubmit} className="edit-text-container">
+                            <ReactQuill
+                                value={eventText}
+                                onChange={setEventText}
+                                placeholder="Event-Text bearbeiten..."
+                                className="textarea"
+                                modules={modules}
+                                required
+                            />
+                        </form>
+                        <div className="form-actions">
+                            <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Speichern</button>
+                        </div>
+                    </section>
+                </div>
             </main>
             <Footer/>
         </div>
