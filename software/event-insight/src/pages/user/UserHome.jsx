@@ -15,8 +15,8 @@ const UserHome = () => {
 
     const links = [
         {name: "Home", path: `/event/${id}`},
-        {name: "Live-Map", path: `/event/${id}/userLiveMap`},
-        {name: "Results", path: `/event/${id}/userResults`},
+        {name: "Live-Karte", path: `/event/${id}/userLiveMap`},
+        {name: "Ergebnisse", path: `/event/${id}/userResults`},
     ];
 
     useEffect(() => {
@@ -35,16 +35,16 @@ const UserHome = () => {
         fetchData(`http://localhost:3001/files/sponsors?eventid=${id}`, (data) => {
             const displayedSponsors = data.filter(sponsor => sponsor.is_displayed === 1);
             setSponsors(displayedSponsors.length === 1 ? [displayedSponsors[0], displayedSponsors[0]] : displayedSponsors);
-        }, "Failed to fetch sponsor data.");
+        }, "Sponsoren konnten nicht geladen werden.");
 
-        fetchData(`http://localhost:3001/events/${id}`, setEvent, "Failed to fetch event data.");
+        fetchData(`http://localhost:3001/events/${id}`, setEvent, "Event konnte nicht geladen werden.");
 
         fetchData(`http://localhost:3001/files/text/fetch?idtext=${id}`, (data) => {
             setEventText(data.text || "");
-        }, "Failed to fetch event text.");
+        }, "Event-Text konnte nicht geladen werden.");
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Wird geladen…</div>;
     if (error) return <div>{error}</div>;
 
     return (

@@ -67,7 +67,7 @@ const LandingPage = () => {
         fetchEvents();
     }, [isLoggedIn, adminId]);
 
-    if (loading) return <div>Loading events...</div>;
+    if (loading) return <div>Events werden geladen…</div>;
     if (error) return <div>{error}</div>;
 
     return (

@@ -126,7 +126,7 @@ const UserLiveMap = () => {
                 );
             } catch (err) {
                 console.error("Error fetching database files:", err);
-                setError("Error fetching database files.");
+                setError("Karten konnten nicht geladen werden.");
             }
         };
         fetchData();
@@ -139,7 +139,7 @@ const UserLiveMap = () => {
                 .then(({data}) => setSelectedApi({value: data.listlink, label: selectedGpx.label}))
                 .catch((err) => {
                     console.error("Error fetching API link:", err);
-                    setError("Error loading API link.");
+                    setError("Ergebnisliste konnte nicht geladen werden.");
                 });
 
             apiClient
@@ -205,7 +205,7 @@ const UserLiveMap = () => {
                 setGpxTrackPoints(gpxTrackPoints);
             } catch (err) {
                 console.error("Error loading GPX data:", err);
-                setError("Error calculating route length.");
+                setError("Streckenlänge konnte nicht berechnet werden.");
             }
         };
 
@@ -268,8 +268,8 @@ const UserLiveMap = () => {
             <Header
                 links={[
                     {name: "Home", path: `/event/${id}`},
-                    {name: "Live-Map", path: `/event/${id}/userLiveMap`},
-                    {name: "Results", path: `/event/${id}/userResults`},
+                    {name: "Live-Karte", path: `/event/${id}/userLiveMap`},
+                    {name: "Ergebnisse", path: `/event/${id}/userResults`},
                 ]}
             />
             <main className="main">
@@ -286,7 +286,7 @@ const UserLiveMap = () => {
                             value={selectedGpx ? {value: selectedGpx.value, label: selectedGpx.label} : null}
                             options={gpxData.map(({value, label}) => ({value, label}))}
                             onChange={handleSelectionChange}
-                            placeholder="Select Live-Map..."
+                            placeholder="Karte auswählen…"
                             minInputLength={2}
                             width="100%"
                             menuWidth="100%"

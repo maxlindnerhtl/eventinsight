@@ -4,7 +4,7 @@ import Select from 'react-select';
 const SearchableSelect = ({
                               options,
                               onChange,
-                              placeholder = "Select an option",
+                              placeholder = "Auswählen…",
                               minInputLength = 1,
                               width = '600px',
                               menuWidth = '600px',

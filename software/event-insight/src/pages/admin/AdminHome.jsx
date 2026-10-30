@@ -22,7 +22,7 @@ const AdminHome = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError("Failed to fetch event data");
+                setError("Event konnte nicht geladen werden.");
                 setLoading(false);
             });
     }, [id]);
@@ -68,7 +68,7 @@ const AdminHome = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Wird geladen…</div>;
     if (error) return <div>{error}</div>;
 
     return (

@@ -15,8 +15,8 @@ const UserResults = () => {
 
     const links = [
         { name: "Home", path: `/event/${id}` },
-        { name: "Live-Map", path: `/event/${id}/userLiveMap` },
-        { name: "Results", path: `/event/${id}/userResults` },
+        { name: "Live-Karte", path: `/event/${id}/userLiveMap` },
+        { name: "Ergebnisse", path: `/event/${id}/userResults` },
     ];
 
     const initialAPILink = searchParams.get('list') || '';
@@ -69,7 +69,7 @@ const UserResults = () => {
                 setApiOptions(options);
             } catch (err) {
                 console.error("Error fetching data:", err);
-                setError("Failed to fetch data.");
+                setError("Daten konnten nicht geladen werden.");
             } finally {
                 setLoading(false);
             }
@@ -87,7 +87,7 @@ const UserResults = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div>Wird geladen…</div>;
     }
 
     if (error) {
@@ -117,7 +117,7 @@ const UserResults = () => {
                             onSearchChange={setSearchTerm}
                         />
                     )}
-                    {showResults && data.length === 0 && <p className="results-empty">No results available for the selected list.</p>}
+                    {showResults && data.length === 0 && <p className="results-empty">Keine Ergebnisse für die gewählte Liste.</p>}
                 </div>
             </main>
             <Footer />

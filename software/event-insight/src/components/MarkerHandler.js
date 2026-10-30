@@ -102,7 +102,7 @@ const MarkerHandler = ({gpxPath, selectedGpxId, participantsData, isAdmin, setIn
         setIntermediateMarkers(updatedMarkers);
     };
 
-    if (isLoading || !center) return <div>Loading data...</div>;
+    if (isLoading || !center) return <div>Karte wird geladen…</div>;
 
     return (
         <div className="map-wrapper">

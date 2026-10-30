@@ -20,7 +20,7 @@ const EditText = () => {
                 setLoading(false);
             })
             .catch(() => {
-                setError("Failed to fetch event data");
+                setError("Event konnte nicht geladen werden.");
                 setLoading(false);
             });
 
@@ -29,7 +29,7 @@ const EditText = () => {
                 setEventText(sanitizeHtml(res.data.text || ""));
             })
             .catch(() => {
-                setError("Failed to fetch text data");
+                setError("Event-Text konnte nicht geladen werden.");
             });
     }, [id]);
 
@@ -57,11 +57,11 @@ const EditText = () => {
                     ? errorData.error
                     : errorData?.error?.message);
 
-            alert(backendMessage || "Error uploading text");
+            alert(backendMessage || "Text konnte nicht gespeichert werden.");
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Wird geladen…</div>;
     if (error) return <div>{error}</div>;
 
     const modules = {

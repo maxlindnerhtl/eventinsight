@@ -24,7 +24,7 @@ const ParticipantCheckboxItem = memo(({ startnr, displayName, Zeit, isDisabled, 
                 />
                 <span className="participant-name">
                     {displayName}
-                    {Zeit ? <span className="participant-finished"> - finished</span> : null}
+                    {Zeit ? <span className="participant-finished"> - im Ziel</span> : null}
                 </span>
                 <span className="participant-nr">{startnr}</span>
             </label>
