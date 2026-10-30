@@ -264,7 +264,7 @@ const UserLiveMap = () => {
     }, [filteredParticipants, selectedParticipants]);
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-user">
             <Header
                 links={[
                     {name: "Home", path: `/event/${id}`},

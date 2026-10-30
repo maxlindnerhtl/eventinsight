@@ -95,7 +95,7 @@ const UserResults = () => {
     }
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-user">
             <Header links={links} />
             <main className="main">
                 <SearchableSelect

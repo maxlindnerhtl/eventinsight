@@ -16,10 +16,10 @@ const AdminSponsors = () => {
     const {id} = useParams();
     const links = [
         { name: "Home", path: `/event/${id}/adminHome` },
-        { name: "Live-Map", path: `/event/${id}/adminLiveMap` },
+        { name: "Live-Karte", path: `/event/${id}/adminLiveMap` },
         { name: "API-Link", path: `/event/${id}/adminResults` },
-        { name: "Sponsors", path: `/event/${id}/adminSponsors` },
-        { name: "Edit Event", path: `/event/${id}/adminEdit` },
+        { name: "Sponsoren", path: `/event/${id}/adminSponsors` },
+        { name: "Event bearbeiten", path: `/event/${id}/adminEdit` },
     ];
 
     const [file, setFile] = useState(null);
@@ -87,7 +87,7 @@ const AdminSponsors = () => {
     };
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-admin">
             <Header links={links}/>
             <main className="main">
                 <div className="form-container">

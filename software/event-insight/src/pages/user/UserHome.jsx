@@ -48,7 +48,7 @@ const UserHome = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-user">
             <Header links={links}/>
             <main className="main">
                 <div className="sponsor-event-container">

@@ -31,7 +31,7 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-admin">
             <Header links={[]}/>
             <main className="main">
                 <div className="form-container">

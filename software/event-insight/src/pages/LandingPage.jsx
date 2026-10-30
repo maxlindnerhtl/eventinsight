@@ -61,7 +61,7 @@ const LandingPage = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-user">
             <Header links={[]}/>
             <main className="main">
                 {events.length > 0 ? (

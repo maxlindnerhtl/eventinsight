@@ -72,13 +72,13 @@ const AdminHome = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="wrapper">
+        <div className="wrapper theme-admin">
             <Header links={[
                 { name: "Home", path: `/event/${id}/adminHome` },
-                { name: "Live-Map", path: `/event/${id}/adminLiveMap` },
+                { name: "Live-Karte", path: `/event/${id}/adminLiveMap` },
                 { name: "API-Link", path: `/event/${id}/adminResults` },
-                { name: "Sponsors", path: `/event/${id}/adminSponsors` },
-                { name: "Edit Event", path: `/event/${id}/adminEdit` },
+                { name: "Sponsoren", path: `/event/${id}/adminSponsors` },
+                { name: "Event bearbeiten", path: `/event/${id}/adminEdit` },
             ]} />
             <main className="main">
                 <div className="event-info-admin">
