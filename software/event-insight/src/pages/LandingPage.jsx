@@ -75,6 +75,14 @@ const LandingPage = () => {
             <Header links={[]}/>
             <main className="main main-flush">
                 <section className="landing-hero">
+                    {/* Decorative course line with start and finish; colors come from CSS */}
+                    <svg className="landing-hero-course" viewBox="0 0 1200 380" preserveAspectRatio="xMidYMid slice"
+                         aria-hidden="true" focusable="false">
+                        <path className="course-line" d="M90 320 C220 120 360 360 520 230 S780 40 920 170 S1060 300 1110 90"/>
+                        <circle className="course-start" cx="90" cy="320" r="14"/>
+                        <circle className="course-finish" cx="1110" cy="90" r="16"/>
+                        <circle className="course-finish-dot" cx="1110" cy="90" r="6"/>
+                    </svg>
                     <div className="landing-hero-inner">
                         <h1 className="landing-title">Läufe live verfolgen</h1>
                         <span className="landing-accent" aria-hidden="true"/>
