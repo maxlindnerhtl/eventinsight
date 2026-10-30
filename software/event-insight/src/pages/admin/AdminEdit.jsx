@@ -102,8 +102,14 @@ const AdminEdit = () => {
         }
     };
 
+    // Display texts only; the type keys themselves drive the endpoint below
+    const deleteLabels = {
+        Map: {accusative: 'diese Karte', genitive: 'der Karte'},
+        Sponsor: {accusative: 'diesen Sponsor', genitive: 'des Sponsors'},
+    };
+
     const handleDelete = async (type, id) => {
-        const confirmDelete = window.confirm(`Möchten Sie diesen ${type} wirklich löschen?`);
+        const confirmDelete = window.confirm(`Möchten Sie ${deleteLabels[type].accusative} wirklich löschen?`);
         if (!confirmDelete) return;
 
         try {
@@ -116,7 +122,7 @@ const AdminEdit = () => {
                 setSponsors(prev => prev.filter(item => item.idSponsors !== id));
             }
         } catch {
-            setActionError(`Fehler beim Löschen der ${type}`);
+            setActionError(`Fehler beim Löschen ${deleteLabels[type].genitive}`);
         }
     };
 
