@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -50,36 +50,49 @@ const UserHome = () => {
     return (
         <div className="wrapper theme-user">
             <Header links={links}/>
-            <main className="main">
-                <div className="sponsor-event-container">
-                    <div className="sponsor-images left">
-                        {sponsors.slice(0, Math.ceil(sponsors.length / 2)).map(sponsor => (
-                            <img
-                                key={sponsor.idSponsors}
-                                src={`http://localhost:3001/${sponsor.sponsorpath}`}
-                                alt={sponsor.sponsorname}
-                                className="sponsor-image"
-                            />
-                        ))}
+            <main className="main main-flush">
+                <section className="event-hero">
+                    <div className="event-hero-inner">
+                        <div className="event-hero-chips">
+                            {event?.formatted_date && <span className="chip">{event.formatted_date}</span>}
+                            {event?.eventlocation && <span className="chip">{event.eventlocation}</span>}
+                            <span className="chip chip-solid">Live</span>
+                        </div>
+                        <h1 className="event-hero-title">{event?.eventname}</h1>
+                        <div className="event-hero-actions">
+                            <Link to={`/event/${id}/userLiveMap`} className="btn btn-on-dark">Zur Live-Karte</Link>
+                            <Link to={`/event/${id}/userResults`} className="btn btn-on-dark-outline">Ergebnisse</Link>
+                        </div>
                     </div>
-                    <div className="event-info">
-                        <h1 className="event-title">{event?.eventname}</h1>
-                        <p className="event-date">{event?.formatted_date}</p>
-                    </div>
-                    <div className="sponsor-images right">
-                        {sponsors.slice(Math.ceil(sponsors.length / 2)).map(sponsor => (
-                            <img
-                                key={sponsor.idSponsors}
-                                src={`http://localhost:3001/${sponsor.sponsorpath}`}
-                                alt={sponsor.sponsorname}
-                                className="sponsor-image"
-                            />
-                        ))}
-                    </div>
+                </section>
+                <div className="event-layout">
+                    {eventText && (
+                        <article className="card event-text" dangerouslySetInnerHTML={{__html: sanitizeHtml(eventText)}}/>
+                    )}
+                    <aside className="event-sidebar">
+                        <section className="card live-card">
+                            <span className="badge-live">Live</span>
+                            <h2 className="section-title">Live-Karte</h2>
+                            <p className="live-card-text">Strecke, Positionen der Teilnehmenden und Höhenprofil in Echtzeit.</p>
+                            <Link to={`/event/${id}/userLiveMap`} className="btn btn-primary">Karte öffnen</Link>
+                        </section>
+                        {sponsors.length > 0 && (
+                            <section className="card">
+                                <h2 className="section-title">Sponsoren</h2>
+                                <div className="sponsor-grid">
+                                    {sponsors.map((sponsor, index) => (
+                                        <img
+                                            key={`${sponsor.idSponsors}-${index}`}
+                                            src={`http://localhost:3001/${sponsor.sponsorpath}`}
+                                            alt={sponsor.sponsorname}
+                                            className="sponsor-grid-image"
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </aside>
                 </div>
-                {eventText && (
-                    <div className="text-container" dangerouslySetInnerHTML={{__html: sanitizeHtml(eventText)}}/>
-                )}
             </main>
             <Footer/>
         </div>
