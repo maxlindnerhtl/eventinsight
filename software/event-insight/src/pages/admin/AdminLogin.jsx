@@ -3,12 +3,14 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import {useAuth} from "../../components/AuthContext";
 
 const AdminLogin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const {login} = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,9 +22,8 @@ const AdminLogin = () => {
                 {username, password}
             );
 
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('username', data.username);
-            localStorage.setItem('adminid', data.adminid);
+            // Writes token, username and adminid to localStorage and sets the context user
+            login({username: data.username, adminid: data.adminid}, data.token);
 
             navigate('/');
         } catch {
